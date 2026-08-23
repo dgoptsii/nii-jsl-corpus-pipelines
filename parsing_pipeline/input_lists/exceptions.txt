@@ -1,0 +1,13 @@
+# Annotations that must not be marked ambiguous.
+#
+# Use this file to record a human decision instead of weakening a parsing rule.
+# One annotation per line; blank lines and '#' comments are ignored.
+# Matching uses the normalised, lower-cased annotation with leading slashes
+# removed.
+#
+# Pass with:  elan-pipeline run ./corpus --exceptions-file exceptions.txt
+#
+# If no file is passed, no exceptions apply - there are no hidden built-in ones.
+
+# --- reviewed 2026-08-06 -----------------------------------------------------
+# (add reviewed annotations below, with the date of the review)

@@ -1,0 +1,41 @@
+# Clips to leave out of the analysis, one per line.
+#
+# Written by hand after looking through output/clips/. Use it for crops no
+# automatic check will catch: the signer walks out of frame, the wrong panel was
+# cropped, the other signer is in the way, the hands are never visible.
+#
+# Pass it with:
+#     python3 run_pipeline.py ... --exclude-file input_lists/excluded_clips.txt
+#     python3 step5_analyze.py ./out --exclude-file input_lists/excluded_clips.txt
+#
+# Anything after a # is a comment, so you can say why. Say why - in six months
+# the reason is the only thing that makes an exclusion reviewable.
+#
+# Four ways to name a clip, all equivalent. Use whichever is easiest to copy
+# out of your file browser:
+#
+#   FS_000123                                  the clip name
+#   FS_000123.mp4                              ... with the extension
+#   FS/FO/FO_01-02_AniN/left/FS_000123         the full clip_id
+#   /Users/you/out/clips/FS/FO/.../FS_000123.mp4       an absolute path
+#
+# A leading folder drops everything under it:
+#
+#   FS/NS/NS_07-08_AniN        every FS clip from that recording
+#   CL/GM                      every CL clip from Gunma
+#
+# Case and slash direction are ignored. An entry that matches nothing is
+# reported at the end of the run - a typo here would otherwise leave the bad
+# clip silently in the analysis.
+#
+# The clips themselves are never deleted; they are skipped from landmark
+# extraction onward, so removing a line and re-running brings the clip back.
+
+# ---------------------------------------------------------------------------
+# Add exclusions below this line
+# ---------------------------------------------------------------------------
+FS_000268.mp4
+FS_000267.mp4
+FS_000266.mp4
+FS_000265.mp4
+LEXICAL_ITEM_006236.mp4

@@ -1,0 +1,97 @@
+# ==========================================================================
+# What belongs in this repository: the code, the documentation, the small
+# hand-edited input lists.
+#
+# What does not: the corpus, anything derived from it, and anything a clone
+# can regenerate. Clips, landmarks and per-frame region counts run to several
+# gigabytes; tables and figures rebuild from them in minutes.
+#
+# The blanket extension rules come first and the exceptions after, because a
+# later rule wins. Note git will not descend into an ignored *directory* to
+# find a re-included file, so every un-ignore below names a path whose parent
+# directories are themselves not ignored.
+# ==========================================================================
+
+# ---- generated and bulky formats, everywhere -------------------------------
+*.csv
+*.tsv
+*.png
+*.jpg
+*.jpeg
+*.svg
+*.pdf
+*.docx
+*.pptx
+*.xlsx
+
+# ---- LaTeX: sources and build artefacts ------------------------------------
+*.tex
+*.sty
+*.cls
+*.bib
+*.aux
+*.log
+*.out
+*.toc
+*.synctex.gz
+*.fdb_latexmk
+*.fls
+*.xdv
+
+# ---- the corpus itself, wherever it is placed ------------------------------
+ELAN_W_OpenPose/
+*.eaf
+*.pfsx
+*.etf
+*.ecv
+*.mp4
+*.mov
+*.avi
+*.wav
+
+# ---- pipeline output trees -------------------------------------------------
+parsing_pipeline/output/
+corpus-statistics-pipeline/corpus_statistics_output/
+signing-space-analysis-pipeline/output/
+signing-space-analysis-pipeline/*.pt
+# The whole reports folder: sources, figures and compiled PDFs. The report is
+# a deliverable, not part of the software, and it is rebuilt from the pipelines
+# by reports/build_report.sh.
+reports/
+
+# ---- Python ----------------------------------------------------------------
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ipynb_checkpoints/
+.venv/
+venv/
+*.egg-info/
+
+# ---- editors, operating systems, scratch -----------------------------------
+.DS_Store
+.vscode/
+.idea/
+*.swp
+*~
+*.code-workspace
+_to_delete/
+_work/
+
+# ==========================================================================
+# Exceptions: tracked despite the rules above
+# ==========================================================================
+
+# The hand-edited lists. These are decisions that accumulate across interns,
+# not generated data, which is why they survive the *.csv and *.txt rules.
+!parsing_pipeline/input_lists/exceptions.txt
+!parsing_pipeline/input_lists/files_of_interest.txt
+!signing-space-analysis-pipeline/input_lists/signers.csv
+!signing-space-analysis-pipeline/input_lists/excluded_clips.txt
+
+# Dependency pins are .txt but are code.
+!**/requirements.txt
+
+# One-off helper, deliberately not part of the pipeline.
+signing-space-analysis-pipeline/remap_clip_ids.py

@@ -1,0 +1,80 @@
+# Files of interest for the pipeline run.
+#
+# One entry per line. Blank lines and lines starting with '#' are ignored.
+# Any of these forms works - only the file stem is used, and matching ignores
+# case and punctuation:
+#
+#   FO_01-02_AniN
+#   FO_01-02_AniN.eaf
+#   FO_01-02_AniN_word_annotations.csv
+#   /mnt/corpus/FO_01-02_AniN.eaf
+#
+# Files listed here but not found in the ELAN folder are reported explicitly.
+
+
+
+FO_01-02_AniN
+FO_03-04_AniN
+FO_03-04_Pro
+FO_05-06_AniN
+FO_05-06_Cur
+FO_05-06_Pro
+FO_07-08_AniN
+FO_07-08_Cur
+FO_09-10_AniN
+FO_09-10_Cur
+FO_11-12_AniN
+FO_13-14_AniN
+FO_13-14_Cur
+FO_15-16_AniN
+FO_15-16_Cur
+GM_01-02_AniN
+GM_03-04_AniN
+GM_05-06_AniN
+IK_03-04_Cur
+IK_15-16_AniN
+IK_15-16_Cur
+IS_01-02_AniN
+IS_01-02_Cur
+IS_03-04_AniN
+IS_03-04_Cur
+IS_03-04_Pro
+IS_05-06_AniN
+IS_05-06_Cur
+IS_07-08_AniN
+IS_07-08_Cur
+IS_07-08_Pro
+IS_09-10_AniN
+IS_09-10_Cur
+IS_09-10_Pro
+IS_11-12_Cur
+IS_13-14_AniN
+IS_13-14_Cur
+IS_13-14_Pro
+NS_01-02_AniN
+NS_01-02_Cur
+NS_05-06_AniN
+NS_05-06_Cur
+NS_07-08_AniN
+NS_07-08_Cur
+NS_09-10_AniN
+NS_09-10_Cur
+NS_11-12_AniN
+NS_11-12_Cur
+NS_11-12_Pro
+NS_13-14_AniN
+NS_13-14_Cur
+NS_15-16_AniN
+TY_01-02_Cur
+TY_03-04_Cur
+TY_05-06_AniN
+TY_05-06_Cur
+TY_07-08_Cur
+TY_09-10_AniN
+TY_09-10_Cur
+TY_11-12_AniN
+TY_11-12_Cur
+TY_13-14_AniN
+TY_13-14_Cur
+TY_15-16_AniN
+TY_15-16_Cur

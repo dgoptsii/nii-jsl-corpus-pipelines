@@ -1,0 +1,16 @@
+# Core analysis. Steps 4 and 5 need only these.
+numpy>=1.24
+pandas>=2.0
+matplotlib>=3.7
+
+# Step 3 (landmark extraction) additionally needs:
+opencv-python>=4.8
+mediapipe>=0.10
+
+# Optional, for masking out the second signer in step 3.
+# Skip it and run step 3 with --no-person-mask.
+ultralytics>=8.0
+
+# Optional, only for tools/signers_from_xlsx.py (rebuilding signers.csv
+# from the annotation-progress spreadsheet).
+openpyxl>=3.1
