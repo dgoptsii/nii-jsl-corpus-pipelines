@@ -18,9 +18,6 @@ What it writes
                                    a signer ID inside
     word_variants_by_file.csv      which files carry a Word-jp variant, which
                                    variant, and how many annotations on it
-    finished_and_ongoing.csv       every recording the spreadsheet marks 〇,
-                                   途中 or 取組中, with the copy the parser
-                                   reads the most annotations from
     signer_label_inflation.csv     every signer written more than one way on a
                                    Word tier: one row per tier, with a stable
                                    label number, the tier and the file it came
@@ -31,9 +28,6 @@ What it writes
                                    PARTICIPANT attribute, and an age or gender
                                    contradicting the spreadsheet
 
-Romanised tiers (``...Word-jp(roman)``) are ignored throughout: they are a
-transcription of the same signing, not an annotation variant, and counting
-them was never intended.
 
 The spreadsheet's first sheet is the authority for who each signer is. It is
 laid out as one block per prefecture, two rows per pair, with the age given
@@ -47,7 +41,7 @@ import csv
 import re
 import sys
 import xml.etree.ElementTree as ET
-from collections import Counter as collections_Counter, defaultdict
+from collections import defaultdict
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
@@ -60,9 +54,6 @@ WORD_TIER_MARKER = "word-jp"
 
 #: ...except a romanised one, which is a transcription, not an annotation.
 ROMAN_MARKER = "roman"
-
-#: A recording's task folder, when it has one.
-TASK_FOLDERS = ("AniN", "Cur", "Pro", "Int", "ReS")
 
 #: Folders whose name starts with this are superseded copies.
 OLD_FOLDER_PREFIX = "old"
@@ -170,74 +161,6 @@ def read_signer_sheet(path: Path, sheet: Optional[str] = None) -> Dict[str, Dict
     return signers
 
 
-#: Task blocks in sheet 1: the column the block starts at, and the suffix the
-#: corpus uses for it. ``グロス``/``Word`` is always the next column along.
-TASK_BLOCKS = {6: "AniN", 24: "Cur", 42: "Pro"}
-
-#: What the Word column says, and what it means.
-STATUS_FINISHED = ("〇", "○", "O", "◯")
-STATUS_ONGOING = ("途中", "取組中")
-
-
-def classify_status(raw: str) -> str:
-    text = str(raw or "").strip()
-    if not text:
-        return ""
-    if text in STATUS_FINISHED:
-        return "finished"
-    if text in STATUS_ONGOING:
-        return "in progress"
-    if text.startswith("WOT"):
-        return "different tier"
-    return "partial"
-
-
-def read_recording_status(path: Path, sheet: Optional[str] = None) -> Dict[str, Dict[str, str]]:
-    """``{"FO_01-02_AniN": {"status": "finished", "status_raw": "〇"}}``.
-
-    Sheet 1 is one block per prefecture and two rows per pair, with three task
-    blocks side by side across the columns -- アニメ, カレー, おらが国自慢, which
-    the corpus names ``AniN``, ``Cur`` and ``Pro``. The pair row carries the
-    Word-annotation state for all three.
-    """
-    import openpyxl
-
-    book = openpyxl.load_workbook(path, read_only=True, data_only=True)
-    worksheet = book[sheet] if sheet else book[book.sheetnames[0]]
-
-    out: Dict[str, Dict[str, str]] = {}
-    code = ""
-
-    for row in worksheet.iter_rows(values_only=True):
-        cells = ["" if value is None else str(value).strip() for value in row]
-        heading = cells[0] if cells else ""
-
-        if heading:
-            for name, prefix in PREFECTURE_CODES.items():
-                if name in heading:
-                    code = prefix
-                    break
-            continue
-
-        pair = cells[1] if len(cells) > 1 else ""
-        if not code or not pair:
-            continue
-
-        # "5-6", and in one block "11−12" with a full-width minus.
-        numbers = re.findall(r"\d+", pair.replace("−", "-").replace("–", "-"))
-        if len(numbers) != 2:
-            continue
-        stem = f"{code}_{int(numbers[0]):02d}-{int(numbers[1]):02d}"
-
-        for column, task in TASK_BLOCKS.items():
-            raw = cells[column + 1] if len(cells) > column + 1 else ""
-            status = classify_status(raw)
-            if status:
-                out[f"{stem}_{task}"] = {"status": status, "status_raw": raw}
-
-    return out
-
-
 # --------------------------------------------------------------------------
 # The ELAN files
 # --------------------------------------------------------------------------
@@ -270,23 +193,6 @@ class FileReport:
         """The ``-Word-jp`` tiers only -- the sanctioned gloss."""
         return sum(count for _, variant, count in self.word_tiers.values()
                    if not variant)
-
-    @property
-    def parser_visible(self) -> int:
-        """What ``parsing_pipeline`` would actually read from this copy.
-
-        Plain ``-Word-jp`` tiers, one per signer: the same rule the parser
-        applies, so copies of one recording can be compared on equal terms.
-        A copy that labels a second pass plainly would otherwise look richer
-        than the copy that labels it ``-Word-jp-T``.
-        """
-        best: Dict[str, int] = {}
-        for participant, variant, count in self.word_tiers.values():
-            if variant:
-                continue
-            signer = signer_stem(participant)
-            best[signer] = max(best.get(signer, 0), count)
-        return sum(best.values())
 
     @property
     def variant_annotations(self) -> int:
@@ -429,58 +335,20 @@ def main(argv=None) -> int:
     output = args.output_folder.expanduser().resolve()
 
     sheet: Dict[str, Dict[str, str]] = {}
-    status: Dict[str, Dict[str, str]] = {}
     if args.sheet_file:
-        workbook = args.sheet_file.expanduser().resolve()
-        sheet = read_signer_sheet(workbook, args.sheet_name)
-        status = read_recording_status(workbook, args.sheet_name)
+        sheet = read_signer_sheet(args.sheet_file.expanduser().resolve(),
+                                  args.sheet_name)
 
     paths = find_eaf_files(root, args.include_old)
     print(f"Corpus:  {root}")
     print(f"Files:   {len(paths)}")
-    print(f"Sheet:   {len(sheet)} signers, {len(status)} recordings tracked"
-          if sheet else "Sheet:   (not given)")
+    print(f"Sheet:   {len(sheet)} signers" if sheet else "Sheet:   (not given)")
     print()
 
     reports = [read_eaf(path, root) for path in paths]
     by_recording: Dict[str, List[FileReport]] = defaultdict(list)
     for report in reports:
         by_recording[report.recording].append(report)
-
-    # ---- finished and ongoing recordings, and which copy to read --------
-    # For each recording the spreadsheet marks 〇, 途中 or 取組中, the copy the
-    # parser would read the most from. Comparing copies on the parser's own
-    # rule matters: a copy that labels a second annotation pass plainly looks
-    # richer than the copy that labels it -Word-jp-T, for the same signing.
-    def tidiness(report: FileReport):
-        parts = report.relative.parts
-        return (
-            0 if re.match(r"^\d\d_", parts[0]) else 1,   # the prefecture tree
-            0 if len(parts) > 2 and parts[-2] in TASK_FOLDERS else 1,
-            0 if report.path.name.endswith(".eaf") else 1,  # plain over .eaf.NNN
-            len(parts),
-            str(report.relative),
-        )
-
-    scope_rows = []
-    for recording in sorted(status):
-        if status[recording]["status"] not in ("finished", "in progress"):
-            continue
-        copies = by_recording.get(recording, [])
-        chosen = min(copies, key=lambda item: (-item.parser_visible,) + tidiness(item)) \
-            if copies else None
-        scope_rows.append({
-            "recording": recording,
-            "status": status[recording]["status"],
-            "status_raw": status[recording]["status_raw"],
-            "word_jp_annotations": chosen.parser_visible if chosen else 0,
-            "chosen_copy": str(chosen.relative) if chosen else "",
-            "n_copies": len(copies),
-            "signers": " ".join(chosen.signers) if chosen else "",
-            "note": "" if chosen and chosen.parser_visible else (
-                "no file in the corpus" if not copies
-                else "file exists but has no Word-jp tier"),
-        })
 
     # ---- recordings that exist more than once ---------------------------
     # One row per copy, spelling out every Word tier it holds and every way a
@@ -663,10 +531,6 @@ def main(argv=None) -> int:
                                        row["recording"], row["path"]))
 
     written = [
-        write_csv(output / "finished_and_ongoing.csv", scope_rows,
-                  list(scope_rows[0].keys()) if scope_rows
-                  else ["recording", "status", "word_jp_annotations",
-                        "chosen_copy"]),
         write_csv(output / "duplicate_recordings.csv", duplicate_rows,
                   list(duplicate_rows[0].keys()) if duplicate_rows
                   else ["recording", "n_copies", "path", "word_jp_annotations",
@@ -684,14 +548,6 @@ def main(argv=None) -> int:
     ]
 
     duplicated = {name: items for name, items in by_recording.items() if len(items) > 1}
-    scope = collections_Counter(row["status"] for row in scope_rows)
-    print(f"finished / ongoing recordings    : {len(scope_rows):5d}"
-          f"  ({scope.get('finished', 0)} finished,"
-          f" {scope.get('in progress', 0)} in progress)")
-    missing = [row for row in scope_rows if row["note"]]
-    if missing:
-        for row in missing:
-            print(f"    {row['recording']:22s} {row['note']}")
     print(f"recordings                       : {len(by_recording):5d}")
     print(f"  existing in more than one place: {len(duplicated):5d}"
           f"  ({sum(len(v) for v in duplicated.values()) - len(duplicated)} extra copies)")
