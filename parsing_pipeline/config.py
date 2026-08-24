@@ -18,7 +18,7 @@ from typing import List, Optional, Set
 #: Columns carried through from the extraction step so that parsed rows can be
 #: joined back onto the original ELAN annotations.
 #:
-#: ``speaker_id`` is the signer -- ``FO_03`` -- and ``tier_id`` is the Word tier
+#: ``speaker_id`` is the signer (``FO_03``) and ``tier_id`` is the Word tier
 #: the row came from. They are separate because a file can hold more than one
 #: Word tier for the same signer: the identity has to survive that, and the
 #: rebuild has to know which tier to hang the parsed children off.

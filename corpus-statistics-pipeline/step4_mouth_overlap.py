@@ -1,16 +1,14 @@
-"""Step 4 -- MouthAction overlap.
-
-Only for recordings that have MouthAction tiers. For each such recording the
-.eaf is read again, every parsed annotation is matched to the mouth labels that
-overlap it in time, and the results are aggregated per marker and for bare
-lexical items.
-
-Where several mouth labels overlap one annotation -- because the recording has
-one tier per signer, or a segmentation tier and a category tier -- the stage
-reports both how often they agree and how often they do not, and writes the
-disagreements out for inspection.
+"""Step 4: MouthAction overlap.
 
     python3 step4_mouth_overlap.py --out output
+
+Only for recordings with MouthAction tiers. Each such .eaf is read again, every
+parsed annotation is matched to the mouth labels overlapping it in time, and
+the results are aggregated per marker and for bare lexical items.
+
+Where several mouth labels overlap one annotation (one tier per signer, or a
+segmentation tier and a category tier) the stage reports how often they agree
+and how often they do not, and writes the disagreements out for inspection.
 """
 
 from __future__ import annotations

@@ -1,32 +1,21 @@
 """How manual annotation co-occurs with mouth action.
 
 Only a subset of the corpus carries MouthAction tiers, so everything here is
-reported against its own denominator -- the annotations that *could* have been
-matched -- and never against the whole corpus. Mixing the two would make the
-mouth findings look far rarer than they are.
+reported against its own denominator (the annotations that *could* have been
+matched), never against the whole corpus.
 
-Three questions are answered, for the corpus and for each prefecture.
+Three questions, for the corpus and for each prefecture: what each marker
+co-occurs with; what a bare lexical item co-occurs with (the plain lexical
+signs, the natural comparison class); and whether the tiers agree, when a
+recording has one MouthAction tier per signer or several annotators' passes.
 
-**What does each marker co-occur with?** For every key column, how often the
-annotations carrying it overlap a Mouthing, a MouthGesture, or an Other label.
-
-**What does a bare lexical item co-occur with?** The same counts for annotations
-that carry a lexical item and no marker at all. These are the plain lexical
-signs, and they are the natural comparison class for the marker rows.
-
-**Do the tiers agree?** A recording may have one MouthAction tier per signer, or
-several annotators' passes over the same material. When more than one label
-covers the same moment, they can classify it the same way or differently. Both
-counts are reported: a disagreement is not an error, it is often a sign that the
+Agreement is measured per *label*, not per annotation, so the numbers can be
+read against the total inventory of mouth labels. A label is **disagreed** when
+a label from another tier overlaps it and puts it in a different category, and
+**agreed** otherwise. Labels no other tier overlaps therefore fall into
+"agreed", which is weaker than confirmation, so they are also counted as
+``n_uncontested``. A disagreement is often not an error but a sign that the
 annotation spans a boundary between two mouth actions.
-
-Agreement is measured per *label*, not per annotation, so the numbers can be read
-against the total number of mouth labels in the corpus. A label counts as
-**disagreed** when a label from another tier overlaps it and classifies it into a
-different category, and as **agreed** otherwise. Labels that no other tier
-overlaps therefore fall into "agreed" -- nothing contradicts them -- and because
-that is a weaker claim than genuine confirmation, they are counted separately as
-``n_uncontested`` in every label table.
 """
 
 from __future__ import annotations
@@ -96,7 +85,7 @@ def label_table(documents: Dict[str, ElanFile],
 
     Two labels are counterparts when they overlap in time and come from
     different tiers. A label is *disagreed* when at least one counterpart puts
-    it in a different category, and *agreed* otherwise -- including when it has
+    it in a different category, and *agreed* otherwise, including when it has
     no counterpart at all, which is recorded as ``uncontested`` so the weaker
     claim can be separated from genuine confirmation.
     """
@@ -281,7 +270,7 @@ def key_category_table(labelled: pd.DataFrame,
     """For each marker and each mouth category: labels, agreement, rows reached.
 
     Two units appear side by side because they answer different questions.
-    ``n_labels`` counts the mouth annotations that overlapped -- the unit the
+    ``n_labels`` counts the mouth annotations that overlapped: the unit the
     agreement figures are about. ``n_rows`` counts the marker's own annotations
     that touched at least one label of that category, and ``percent_of_rows``
     puts it over every annotation carrying the marker, which is the reading a

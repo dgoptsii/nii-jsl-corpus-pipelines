@@ -1,16 +1,15 @@
 """Figures for the corpus statistics.
 
-Every figure is meant to go into the report or the poster unchanged, so they
-share one visual identity: a validated light categorical palette, a recessive
-grid, and **an exact number printed next to every bar, point and segment** --
-these figures are read as tables as often as they are read as pictures.
+Every figure goes into the report or the poster unchanged, so they share one
+visual identity: a validated light categorical palette, a recessive grid, and
+an exact number printed next to every bar, point and segment, since these are
+read as tables as often as pictures.
 
-Where a quantity splits into a confirmed and a contested part -- mouth labels
-that other annotators agreed or disagreed with -- the contested part is drawn as
-a lighter tint of the *same* hue with a hatch over it. Same hue because it is the
-same quantity; hatch as well as tint so the distinction survives greyscale
-printing and colour-vision deficiency.
-
+Where a quantity splits into a confirmed and a contested part (mouth labels
+other annotators agreed or disagreed with) the contested part is a lighter tint
+of the *same* hue with a hatch over it: same hue because it is the same
+quantity, hatch as well as tint so the split survives greyscale printing and
+colour-vision deficiency.
 """
 
 from __future__ import annotations
@@ -181,8 +180,8 @@ def plot_overview_tiles(summary: pd.DataFrame, path: Path) -> Optional[Path]:
 def plot_annotation_breakdown(summary: pd.DataFrame, path: Path) -> Optional[Path]:
     """The parser's outcome for the whole corpus, as counts and shares.
 
-    Rows are nested rather than exclusive -- "with a lexical item" is a subset of
-    "parsed" -- so this is deliberately a list of measurements against one
+    Rows are nested rather than exclusive: "with a lexical item" is a subset of
+    "parsed": so this is deliberately a list of measurements against one
     denominator, not a partition. Every share is of the total.
     """
     if summary.empty:
@@ -244,7 +243,7 @@ def plot_coverage_curve(curve: pd.DataFrame, path: Path,
     total = len(curve)
     # On a log axis the marked cutoffs bunch together near the right-hand end,
     # so labelling each point in place guarantees collisions. The readings go in
-    # a block in the upper-left instead -- the one region a rising cumulative
+    # a block in the upper-left instead: the one region a rising cumulative
     # curve always leaves empty.
     readings = []
     for cutoff in cutoffs:
@@ -297,8 +296,8 @@ def _ramp_colour(value: float, largest: float) -> tuple:
 def plot_class_sizes(class_sizes: pd.DataFrame, path: Path) -> Optional[Path]:
     """How many glosses could serve as classes, at each pair of floors.
 
-    A grid, not a line chart. The question is a lookup -- "at 20 examples and 5
-    signers, how many classes do I have?" -- and the four signer floors converge
+    A grid, not a line chart. The question is a lookup, "at 20 examples and 5
+    signers, how many classes do I have?", and the four signer floors converge
     onto one another above about 20 examples, so plotted as lines three of them
     are hidden under the fourth exactly where a reader would try to read them.
 
@@ -363,8 +362,8 @@ def plot_vocabulary_coverage(coverage: pd.DataFrame, path: Path) -> Optional[Pat
     """The coverage table as a picture: what each candidate vocabulary buys.
 
     One row per candidate vocabulary. The pair of bars is the same quantity
-    twice -- all the tokens those glosses account for, and the tokens left after
-    capping each gloss at ``cap`` -- so the capped bar is a lighter tint of the
+    twice: all the tokens those glosses account for, and the tokens left after
+    capping each gloss at ``cap``: so the capped bar is a lighter tint of the
     same hue rather than a second colour. The gap between them is the imbalance
     a training set would have to absorb.
 
@@ -618,7 +617,7 @@ def plot_mouth_key_category(key_categories: pd.DataFrame, path: Path,
                             max_units: int = 12) -> Optional[Path]:
     """For each marker, what the mouth was doing, and whether annotators agreed.
 
-    Three rows per marker -- one per mouth category -- with the contested part of
+    Three rows per marker (one per mouth category) with the contested part of
     each bar hatched. The printed text carries what the bar cannot: the agreed
     and disagreed split, and how many of the marker's own annotations that
     category reached.
@@ -627,8 +626,8 @@ def plot_mouth_key_category(key_categories: pd.DataFrame, path: Path,
         return None
     frame = key_categories[key_categories["tag"] == "GLOBAL"] \
         if "GLOBAL" in set(key_categories["tag"]) else key_categories
-    # Markers only. The two summary units -- every annotation, and bare lexical
-    # items -- are five to ten times larger than any single marker, and putting
+    # Markers only. The two summary units: every annotation, and bare lexical
+    # items: are five to ten times larger than any single marker, and putting
     # them on the same axis squeezes every marker bar into the left margin. They
     # stay in mouth_overlap.csv and in the LaTeX table, where the numbers are
     # read rather than compared by length.
@@ -673,7 +672,7 @@ def plot_mouth_key_category(key_categories: pd.DataFrame, path: Path,
         axes.axhline(y[index] + 0.5, color=GRID, linewidth=0.8)
 
     axes.set_yticks(y)
-    axes.set_yticklabels([f"{_unit_label(u)} — {c}" for u, c, _r in rows], fontsize=8)
+    axes.set_yticklabels([f"{_unit_label(u)}: {c}" for u, c, _r in rows], fontsize=8)
     axes.set_xlim(0, widest * 2.20)
     axes.set_xlabel("overlapping MouthAction labels")
     axes.set_title("Mouth action co-occurring with each marker")
@@ -720,7 +719,7 @@ def plot_duration_distribution(durations: pd.DataFrame, path: Path,
     axes.set_yticks(y)
     axes.set_yticklabels([_unit_label(u) for u in subset["unit"]], fontsize=8)
     _headroom(axes, subset["p95_ms"], 1.62)
-    axes.set_xlabel("annotation duration (ms) — median, 25–75%, 5–95%")
+    axes.set_xlabel("annotation duration (ms): median, 25-75%, 5-95%")
     axes.set_title("How long an annotated segment lasts")
     axes.grid(axis="y", visible=False)
     _tidy(axes)
@@ -758,7 +757,7 @@ def plot_signer_balance(balance: pd.DataFrame, path: Path) -> Optional[Path]:
 def plot_region_vocabulary(summary: pd.DataFrame, path: Path) -> Optional[Path]:
     """Lexical variety per prefecture, normalised by how much each contributed.
 
-    Vocabulary size on its own only restates corpus size -- the prefecture with
+    Vocabulary size on its own only restates corpus size: the prefecture with
     the most annotations will have the largest vocabulary. Dividing by tokens
     gives the quantity that actually differs between prefectures, and it is the
     one a modeller feels directly: more variety per token means fewer examples

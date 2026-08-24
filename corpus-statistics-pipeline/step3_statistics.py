@@ -1,4 +1,4 @@
-"""Step 3 -- every count, globally and per prefecture.
+"""Step 3: every count, globally and per prefecture.
 
 Reads the annotation table from step 2 and writes the tables that answer the
 corpus-description questions: how much material there is, how much of it parsed,

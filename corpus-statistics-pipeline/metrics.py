@@ -1,22 +1,16 @@
 """Corpus counts, computed once and reported globally and per prefecture.
 
-Every function here takes the annotation table built by step 2 and returns a
+Every function takes the annotation table built by step 2 and returns a
 DataFrame. None of them filter by region: the driver calls them once per region
-and once for the whole corpus, so a regional number and the global number can
-never be computed different ways.
-
-Two definitions are used throughout and are worth stating once.
+and once for the whole corpus, so a regional and a global number can never be
+computed different ways.
 
 **Successfully parsed** means the row carries neither the ``compound`` nor the
-``ambiguous`` flag. A compound is deliberately left unparsed -- a compound sign
-is not the sum of its parts -- and an ambiguous row is one the parser refused to
-guess at. Both are legitimate outcomes, so they are counted, but they are not
-part of the analysable set.
-
-**Unique** is reported for two different things, because they answer different
-questions: unique *annotation strings* measures how much notational variety the
-annotators produced, and unique *lexical items* measures vocabulary size. Only
-the second is what a machine-learning user means by "vocabulary".
+``ambiguous`` flag. Both are legitimate outcomes and are counted, but neither is
+part of the analysable set. **Unique** is reported for two things: unique
+annotation strings measure notational variety, unique lexical items measure
+vocabulary size, and only the second is what a machine-learning user means by
+"vocabulary".
 """
 
 from __future__ import annotations

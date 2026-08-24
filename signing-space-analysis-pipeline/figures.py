@@ -1,15 +1,10 @@
 """Figures, all carrying signer-level uncertainty.
 
-Two kinds are produced:
-
-* a **body map** per keyword: the signing space drawn to scale, each region
-  shaded by the share of hand points it received, annotated with the share and
-  its 95% bootstrap interval;
-* **comparison bars** of the average number of regions used per clip, by
-  geographical region and by age group, with interval whiskers.
-
-Matplotlib rather than hand-placed OpenCV pixels: error bars, log-free axes and
-vector output come for free, and the figures are editable for a poster.
+A **body map** per keyword: the signing space drawn to scale, each region
+shaded by the share of hand points it received and annotated with that share
+and its 95% bootstrap interval. And **comparison bars** of the average number
+of regions used per clip, by geographical region and by age group, with
+interval whiskers.
 """
 
 from __future__ import annotations

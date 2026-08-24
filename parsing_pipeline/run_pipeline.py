@@ -3,32 +3,13 @@
 
     python run_pipeline.py CORPUS_FOLDER -output_folder OUTPUT_FOLDER [options]
 
-What it does, for every .eaf file it finds:
+For every .eaf it finds: extract the Word-jp annotations (extract.py), parse
+them into structured columns (parsing.py), and write a new .eaf keeping every
+original tier and adding the parsed columns as child tiers (elan_builder.py).
 
-    1. extract the Word-jp annotations           (extract.py)
-    2. parse them into structured columns        (parsing.py)
-    3. write a new .eaf file that keeps every    (elan_builder.py)
-       original tier and adds the parsed
-       columns as child tiers
-
-Examples
---------
-    # everything under ./corpus, recursively
-    python run_pipeline.py ./corpus -output_folder ./output
-
-    # only the .eaf files sitting directly in ./corpus
-    python run_pipeline.py ./corpus -output_folder ./output --flat
-
-    # only the files listed in a text file
-    python run_pipeline.py ./corpus -output_folder ./output --file-list input_lists/files_of_interest.txt
-
-    # also keep the intermediate CSVs for checking
-    python run_pipeline.py ./corpus -output_folder ./output --save-debug
-
-    # show which files would be processed, then stop
-    python run_pipeline.py ./corpus --list-only
-
-Run with --help for the full list of options.
+Useful flags: ``--flat`` (no recursion), ``--file-list FILE``, ``--save-debug``
+(keep the intermediate CSVs), ``--list-only`` (show what would be processed).
+Run with --help for the full list.
 """
 
 from __future__ import annotations

@@ -1,15 +1,14 @@
 """Extract the reduced landmark set from a cropped clip.
 
-Only the points the signing-space analysis actually uses are kept - shoulders,
-elbows, wrists, the knuckle of every finger, the chin and the top of the head -
-which is about 50 floats per frame instead of MediaPipe's ~1200. Detection cost
-is reduced separately, by defaulting to model complexity 1 and the unrefined
-face mesh (the refined mesh only improves eyes and lips, which are unused).
+Only the points the analysis uses are kept (shoulders, elbows, wrists, the
+knuckle of every finger, chin and head top): about 50 floats per frame instead
+of MediaPipe's ~1200. Detection cost is reduced separately, by defaulting to
+model complexity 1 and the unrefined face mesh.
 
 Each clip is cropped from a two-person recording, so the other signer can be
-partly in frame. YOLO segments people, the non-target signer is painted out with
-a static background estimate, and any hand that does not sit on the target's
-silhouette is rejected outright.
+partly in frame. YOLO segments people, the non-target signer is painted out
+with a static background estimate, and any hand not sitting on the target's
+silhouette is rejected.
 """
 
 from __future__ import annotations

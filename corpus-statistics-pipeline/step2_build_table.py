@@ -1,16 +1,15 @@
-"""Step 2 -- build one annotation table from the parsed CSVs.
-
-Reads every parsed CSV in the annotations folder, tags each row with its source
-file and prefecture, adds the classification flags, and writes a single table.
-Everything after this stage works on that one file, which is what keeps the
-global and the per-region numbers from drifting apart.
-
-The stage also reports how many parsed files it could match to an ELAN document.
-An unmatched file is not fatal -- the annotation counts are still correct -- but
-its recording duration is missing from every rate, so the mismatch is printed
-rather than buried.
+"""Step 2: build one annotation table from the parsed CSVs.
 
     python3 step2_build_table.py --annotations /path/to/parsed --out output
+
+Reads every parsed CSV, tags each row with its source file and prefecture, adds
+the classification flags, and writes a single table. Everything after this
+stage works on that one file, which is what keeps the global and per-region
+numbers from drifting apart.
+
+The stage also reports how many parsed files it could match to an ELAN
+document. An unmatched file is not fatal, since the annotation counts are still
+correct, but its recording duration is missing from every rate.
 """
 
 from __future__ import annotations

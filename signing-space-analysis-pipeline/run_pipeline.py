@@ -1,24 +1,15 @@
 #!/usr/bin/env python3
 """Run the whole signing-space analysis pipeline.
 
-    python3 run_pipeline.py PARSED_FOLDER --video-root /path/to/videos \\
+    python3 run_pipeline.py PARSED_FOLDER --video-root /path/to/videos \
         -output_folder ./out --keywords cl fs --regions FO GM
 
-Stages, in order:
+Stages: 1 select parsed rows, 2 cut clips, 3 landmarks, 4 region counts,
+5 tables and figures. Each ``step*.py`` also runs alone, which is what you want
+when only the analysis changed; ``--from-stage`` / ``--to-stage`` do the same.
 
-    1. select    parsed annotation rows for the chosen keywords   (step1)
-    2. clips     one cropped video per annotation                 (step2)
-    3. landmarks the reduced landmark set per clip                (step3)
-    4. regions   per-frame signing-space region counts            (step4)
-    5. analyse   tables and figures with signer-level CIs         (step5)
-
-Each stage is also runnable on its own - see the step*.py scripts - which is
-what you want when only the analysis changed and the landmarks are expensive to
-recompute. ``--from-stage`` and ``--to-stage`` do the same thing here.
-
-Optional metadata, one CSV, meant to be committed:
-    --signers-file   signer_id,handedness,age
-                     left-handed signers are mirrored; ages drive the age table
+``--signers-file`` supplies handedness (left-handers are mirrored), age and
+gender.
 """
 
 from __future__ import annotations

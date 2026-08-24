@@ -1,17 +1,17 @@
 """Signing-space geometry: normalisation, yaw correction, region classification.
 
-The coordinate pipeline for one frame is:
+The coordinate pipeline for one frame:
 
-1. **Shoulder normalisation** - translate the shoulder midpoint to the origin,
-   rotate the shoulder line onto the x-axis (removes camera roll), and scale by
-   the shoulder width. Everything downstream is in "shoulder widths".
-2. **Yaw correction** - a signer filmed from the side has a torso turned away
-   from the lens, which compresses the horizontal axis. The turn is estimated
-   from the shoulder depth difference and undone by stretching x by 1/cos(yaw).
-3. **Handedness mirroring** - for a left-handed signer, negate x so that their
-   dominant-hand space lands where a right-handed signer's does.
-4. **Region classification** - anatomical reference lines are derived from the
-   normalised pose and face, and each stored hand point falls into one region.
+1. **Shoulder normalisation**: shoulder midpoint to the origin, shoulder line
+   rotated onto the x-axis (removing camera roll), scaled by shoulder width, so
+   everything downstream is in shoulder widths.
+2. **Yaw correction**: a torso turned away from the lens compresses the
+   horizontal axis; the turn is estimated from the shoulder depth difference
+   and undone by stretching x by 1/cos(yaw).
+3. **Handedness mirroring**: for a left-hander, negate x so their dominant-hand
+   space lands where a right-hander's does.
+4. **Region classification**: anatomical reference lines from the normalised
+   pose and face place each stored hand point in one region.
 """
 
 from __future__ import annotations

@@ -1,32 +1,16 @@
 #!/usr/bin/env python3
-"""STEP 5 - aggregate region counts into tables and figures.
+"""STEP 5: aggregate region counts into tables and figures.
 
     python3 step5_analyze.py OUTPUT_FOLDER [options]
 
-Tables (all with 95% CIs bootstrapped over signers)
----------------------------------------------------
-    tables/clip_level.csv                   one row per clip and hand role
-    tables/by_region_and_keyword.csv        Table 1: region x keyword
-    tables/by_age_group_and_keyword.csv     Table 2: age decade x keyword
-    tables/by_age_band_and_keyword.csv      under 50 vs 50+, x keyword
-    tables/by_gender_and_keyword.csv        Table 3: gender x keyword
-    tables/by_region_age_gender.csv         all three crossed, for interactions
-    tables/region_distribution.csv          share of points per signing region
-    tables/region_groups.csv                coarse anatomical groups
-    tables/central_periphery_summary.csv    central / periphery / extreme split
+Writes ``tables/`` (clip_level, by_region_and_keyword, by_age_group_and_keyword,
+by_age_band_and_keyword, by_gender_and_keyword, by_region_age_gender,
+region_distribution, region_groups, central_periphery_summary; all with 95% CIs
+bootstrapped over signers) and ``figures/`` (body_map_<KEYWORD>_<REGION>,
+avg_regions_by_region / _age_group / _age_band / _gender, region_groups).
 
-Figures
--------
-    figures/body_map_<KEYWORD>_<REGION>.png
-    figures/avg_regions_by_region.png
-    figures/avg_regions_by_age_group.png
-    figures/avg_regions_by_age_band.png
-    figures/avg_regions_by_gender.png
-    figures/region_groups.png
-
-This stage is cheap - seconds, not hours - and re-runnable on its own. Age
-bands and gender are resolved HERE, not frozen into the clip index, so
-regrouping the ages or adding a metadata column needs only:
+Age bands and gender are resolved here, not frozen into the clip index, so
+regrouping ages costs seconds rather than a re-extraction:
 
     python3 step5_analyze.py OUTPUT_FOLDER --signers-file input_lists/signers.csv
 """
@@ -74,18 +58,15 @@ def load_frames(output_folder: Path, keywords: Sequence[str],
                 exclusions: Optional[ClipExclusions] = None) -> pd.DataFrame:
     """Concatenate every per-frame counts CSV, joined to its clip metadata.
 
-    Age band and gender are *labels*: they change no geometry, so they are
-    resolved here rather than being frozen into the clip index at step 2. That
-    is what makes "regroup the ages" a seconds-long re-run of step 5 instead of
-    a re-cut of every clip.
+    Age band and gender are *labels*: they change no geometry, so they are resolved
+    here rather than frozen into the clip index at step 2. That is what makes
+    "regroup the ages" a seconds-long re-run of step 5. Both are read from the
+    participant ID (``FO_08_FK_50F`` is a 50-band female signer), so this happens
+    with or without ``--signers-file``.
 
-    Both are read from the participant ID - ``FO_08_FK_50F`` is a 50-band female
-    signer - so this happens with or without ``--signers-file``; the file only
-    fills in IDs that carry no age/gender suffix.
-
-    Handedness is deliberately NOT re-resolved: it decides whether a signer's
-    space is mirrored, so changing it invalidates the stored region counts.
-    Change handedness and you must re-run step 4.
+    Handedness is deliberately NOT re-resolved: it decides whether a signer's space
+    is mirrored, so changing it invalidates the stored region counts and step 4
+    must be re-run.
     """
     index_path = output_folder / CLIPS_SUBFOLDER / CLIP_INDEX_FILE
     counts_root = output_folder / REGION_COUNTS_SUBFOLDER

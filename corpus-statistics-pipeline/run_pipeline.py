@@ -103,8 +103,8 @@ def main(argv=None) -> int:
         print(f"\n[step {step} finished in {elapsed:.1f}s, exit {code}]")
         if code != 0:
             failures.append(step)
-            # Step 4 is optional -- a corpus subset may simply have no mouth
-            # tiers -- but a failed 1, 2 or 3 leaves nothing for what follows.
+            # Step 4 is optional: a corpus subset may simply have no mouth
+            # tiers: but a failed 1, 2 or 3 leaves nothing for what follows.
             if step in (1, 2, 3):
                 print(f"Stopping: later stages depend on step {step}.", file=sys.stderr)
                 break

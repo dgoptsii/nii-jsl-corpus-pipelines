@@ -1,4 +1,4 @@
-# JSL Dialogue Corpus — annotation normalisation and signing-space analysis
+# JSL Dialogue Corpus: annotation normalisation and signing-space analysis
 
 Three pipelines that turn the free-form gloss annotations of the Japanese Sign
 Language Dialogue Corpus into structured, analysable data, and then measure how
@@ -14,7 +14,7 @@ ELAN .eaf  ─▶  1. parsing  ─▶  parsed annotations  ─┬─▶  2a. cor
 
 | Folder | What it does |
 | --- | --- |
-| [`parsing_pipeline/`](parsing_pipeline/) | Splits each gloss string into its layers — pointing, classifiers, fingerspelling, mouthing, gestures, non-manual markers — and writes them back as time-aligned ELAN tiers. |
+| [`parsing_pipeline/`](parsing_pipeline/) | Splits each gloss string into its layers (pointing, classifiers, fingerspelling, mouthing, gestures, non-manual markers) and writes them back as time-aligned ELAN tiers. |
 | [`corpus-statistics-pipeline/`](corpus-statistics-pipeline/) | Counts what is in the corpus: recordings, signers, duration, vocabulary, marker frequency, parse outcome. |
 | [`signing-space-analysis-pipeline/`](signing-space-analysis-pipeline/) | Cuts one clip per annotation, extracts pose and hand landmarks, normalises them on the signer's body, and classifies every hand point into one of 26 body-relative regions. |
 | [`reports/`](reports/) | The technical report. |
@@ -60,5 +60,5 @@ uses MediaPipe and a YOLOv8n-seg checkpoint.
 ## Citing the corpus
 
 M. Bono et al., "Utterance unit annotation for the Japanese Sign Language
-Dialogue Corpus," John Benjamins, 2023, pp. 353–382.
+Dialogue Corpus," John Benjamins, 2023, pp. 353-382.
 <https://research.nii.ac.jp/jsl-corpus/public/en/>

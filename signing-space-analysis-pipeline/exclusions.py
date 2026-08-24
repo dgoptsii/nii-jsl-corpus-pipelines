@@ -1,23 +1,17 @@
 """An optional list of clips to drop after visual inspection.
 
-Some crops are unusable - the signer steps out of frame, the panel is wrong, the
-other signer dominates - and no automatic check catches all of them. This is the
-manual override: a text file of clip names, applied from landmark extraction
-onward.
+Some crops are unusable (the signer steps out of frame, the panel is wrong) and
+no automatic check catches them. This is the manual override: a text file of
+clip names, applied from landmark extraction onward.
 
     # input_lists/excluded_clips.txt
-    FS_000123          # signer leaves frame
-    FS_000481
-    CL/FO/FO_01-02_AniN/left/CL_000044
-    FS/NS/NS_07-08_AniN          # whole recording: bad camera angle
+    FS_000123                    # one clip
+    FS/NS/NS_07-08_AniN          # whole recording
 
-Matching is deliberately forgiving, because the names get copied out of a file
-browser: the bare clip name, with or without ``.mp4``, the full ``clip_id``, an
-absolute path, or any leading folder of a ``clip_id`` to drop everything under
-it. Case and slash direction are ignored.
-
-The one thing not forgiven is a name that matches nothing. A typo in an
-exclusion list is invisible - the clip stays in, the analysis looks fine - so
+Matching is forgiving, since names get copied out of a file browser: bare name,
+with or without ``.mp4``, full ``clip_id``, absolute path, or any leading folder
+of a ``clip_id``. Case and slash direction are ignored. The one thing not
+forgiven is an entry matching nothing: a typo here is otherwise invisible, so
 every unused entry is reported.
 """
 
@@ -114,7 +108,7 @@ def load_exclusions(paths) -> ClipExclusions:
     """Read one list, or several, into a single set of exclusions.
 
     Several because the reasons for dropping a clip are independent and arrive
-    at different times -- a batch rejected during one inspection pass, another
+    at different times: a batch rejected during one inspection pass, another
     during the next. Keeping them in separate files means each can be
     regenerated or cleared on its own; merging them by hand would make one of
     them go stale. Clips cut from the wrong source file are not handled here:

@@ -72,8 +72,8 @@ def write_latex_table(frame: pd.DataFrame,
         alignment = "".join("r" if pd.api.types.is_numeric_dtype(subset[c]) else "l"
                             for c in subset.columns)
 
-    # A supplied header is literal LaTeX -- it may contain \% or \textsc{} on
-    # purpose -- so only the fallback, which is a raw column name, is escaped.
+    # A supplied header is literal LaTeX: it may contain \% or \textsc{} on
+    # purpose: so only the fallback, which is a raw column name, is escaped.
     lines = [f"\\begin{{tabular}}{{{alignment}}}", "\\toprule"]
     lines.append(" & ".join(headers[c] if c in headers
                             else escape(c.replace("_", " "))
@@ -209,7 +209,7 @@ def parse_outcome_table(summary: pd.DataFrame) -> pd.DataFrame:
          share(row["n_key_only"], parsed)),
         (Literal(r"\midrule"), Literal(""), Literal("")),
         # Counts only. A percentage here would need a different denominator on
-        # every line -- strings, then vocabulary -- which reads as though the
+        # every line (strings, then vocabulary) which reads as though the
         # column meant one thing when it meant three.
         (heading("cleaned lexicon"), Literal(""), Literal("")),
         (Literal("Distinct annotation strings"), count_of(strings), Literal("")),
@@ -223,7 +223,7 @@ def parse_outcome_table(summary: pd.DataFrame) -> pd.DataFrame:
 def write_report_tables(tables: Dict[str, pd.DataFrame], folder: Path) -> Dict[str, Path]:
     """Write every table the report section expects, skipping missing ones.
 
-    ``summary`` keeps its per-region rows -- comparing prefectures is the point
+    ``summary`` keeps its per-region rows: comparing prefectures is the point
     of that table. Every other export is restricted to the whole corpus; the
     regional versions stay in the CSVs.
     """

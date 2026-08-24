@@ -1,25 +1,19 @@
 """Top-N gloss selection and the vocabulary coverage table.
 
-The functions here are the ones meant to be called directly, from a script or
-an interactive session:
+Meant to be called directly, from a script or an interactive session:
 
     from topn import top_glosses, write_top_glosses, coverage_table
 
-    top_glosses(stats, top_n=100, min_signers=5)
     top_glosses(stats, top_n=100, min_signers=5, regions=["FO", "GM"])
     write_top_glosses(annotations, "out/top100.csv", top_n=100, min_signers=5)
     coverage_table(stats)
 
-Two ideas run through all of them.
-
-**A gloss needs several signers to be usable.** A gloss seen 400 times from one
-person teaches a model that person's idiolect. ``min_signers`` is therefore a
-first-class argument everywhere, not a filter applied afterwards.
-
-**Totals are capped.** A handful of very frequent glosses would otherwise
-dominate any total, and a training set built from them would be just as
-imbalanced. The capped total answers the more useful question: how many
-examples would you actually keep if you took at most ``cap`` per gloss?
+Two ideas run through all of them. **A gloss needs several signers to be
+usable**: one seen 400 times from one person teaches that person's idiolect, so
+``min_signers`` is a first-class argument, not a filter applied afterwards.
+**Totals are capped**, because a handful of very frequent glosses would
+otherwise dominate every total; the capped total answers how many examples you
+would keep taking at most ``cap`` per gloss.
 """
 
 from __future__ import annotations
@@ -49,7 +43,7 @@ def gloss_statistics_for_regions(annotations: pd.DataFrame,
     """Gloss statistics restricted to a set of prefectures.
 
     ``regions=None`` means the whole corpus. Passing a list recomputes the
-    counts inside those prefectures only -- it does not filter a global table,
+    counts inside those prefectures only: it does not filter a global table,
     which would leave the signer and occurrence counts describing the whole
     corpus while claiming to describe a subset.
     """
@@ -69,7 +63,7 @@ def top_glosses(gloss_stats: pd.DataFrame,
     """The ``top_n`` most frequent glosses that clear ``min_signers``.
 
     The signer filter is applied *before* the cutoff, so "top 100 with at least
-    5 signers" means the 100 most frequent glosses among those that qualify --
+    5 signers" means the 100 most frequent glosses among those that qualify:
     not the qualifying members of the overall top 100, which would silently
     return fewer than 100 rows.
     """

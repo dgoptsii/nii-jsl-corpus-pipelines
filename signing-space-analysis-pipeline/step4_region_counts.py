@@ -1,22 +1,15 @@
 #!/usr/bin/env python3
-"""STEP 4 - classify landmarks into signing-space regions, frame by frame.
-
-Normalises on the shoulders, undoes the signer's yaw, mirrors the space for
-left-handed signers, and counts how many stored hand points fall into each
-region. Columns are named by hand ROLE (``dominant`` / ``non_dominant``) so
-left- and right-handers pool correctly.
+"""STEP 4: classify landmarks into signing-space regions, frame by frame.
 
     python3 step4_region_counts.py OUTPUT_FOLDER [options]
 
-Output
-------
-    OUT/region_counts/<CLIP_ID>/region_counts.csv
+Normalises on the shoulders, undoes the signer's yaw, mirrors the space for
+left-handed signers, and counts how many stored hand points fall in each
+region. Columns are named by hand ROLE (``dominant`` / ``non_dominant``) so
+left- and right-handers pool correctly.
 
-With ``--save-debug-video`` (off by default), also:
-
-    OUT/debug/<CLIP_ID>/signing_space.mp4   the clip beside the normalised
-                                            space, every counted point coloured
-                                            by the region it was assigned to
+Output: ``OUT/region_counts/<CLIP_ID>/region_counts.csv``; with
+``--save-debug-video``, also ``OUT/debug/<CLIP_ID>/signing_space.mp4``.
 """
 
 from __future__ import annotations

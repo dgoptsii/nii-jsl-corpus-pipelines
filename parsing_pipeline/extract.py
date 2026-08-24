@@ -121,8 +121,8 @@ def signer_stem(participant_id: str) -> str:
     corpus is not consistent about them: the same person appears as
     ``FO_03_NG_40F`` in one file and ``FO_03_NG_50F`` in another, and
     ``TY_11`` carries three spellings across three files. Counting those
-    strings counts typing, not signers, so everything downstream -- the corpus
-    statistics, the signers file, the bootstrap that resamples over signers --
+    strings counts typing, not signers, so everything downstream, the corpus
+    statistics, the signers file, the bootstrap that resamples over signers,
     uses this stem.
 
     A participant ID that does not start with the corpus pattern is returned
@@ -142,7 +142,7 @@ def one_tier_per_signer(
     """Keep one Word tier per signer, and report the ones set aside.
 
     Only ``-Word-jp`` tiers reach this function, but a file can still hold two
-    of them for one person -- ``FO_03-04_AniN`` carries ``FO_03_NG_40F-Word-jp``
+    of them for one person: ``FO_03-04_AniN`` carries ``FO_03_NG_40F-Word-jp``
     and ``FO_03_NG_50F-Word-jp``, the same 378 annotations under two spellings
     of the same signer. The fuller tier is kept.
 

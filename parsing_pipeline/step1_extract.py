@@ -1,21 +1,13 @@
 #!/usr/bin/env python3
 """STEP 1 (optional, standalone): extract Word-jp annotations into CSV files.
 
-You only need this if you want to inspect or hand-correct the extracted
-annotations before parsing them. The normal path is run_pipeline.py, which does
-all three steps in one go.
+Only needed to inspect or hand-correct the extracted annotations before parsing
+them; run_pipeline.py does all three steps in one go.
 
     python step1_extract.py CORPUS_FOLDER -output_folder EXTRACTED_FOLDER [options]
 
-Example
--------
-    python step1_extract.py ./corpus -output_folder ./extracted
-    python step1_extract.py ./corpus -output_folder ./extracted --flat --file-list input_lists/files_of_interest.txt
-
-Output
-------
-    EXTRACTED_FOLDER/<name>_word_annotations.csv
-        columns: file_id, start_ms, end_ms, annotation
+Output: ``EXTRACTED_FOLDER/<name>_word_annotations.csv``, columns file_id,
+tier_id, start_ms, end_ms, annotation.
 """
 
 from __future__ import annotations

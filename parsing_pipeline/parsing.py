@@ -1224,7 +1224,7 @@ def parse_marker_with_value(text: str, attrs: Dict[str, str], key: str) -> str:
 
     The value is put back as its own ``;`` component rather than joined with a
     space. A space is not a word boundary in Japanese, so ``fs:\u304a(ges:\u3042)`` used
-    to leave the residue ``\u304a \u3042`` -- one blob that the fingerspelled-material
+    to leave the residue ``\u304a \u3042``: one blob that the fingerspelled-material
     snapshot in parse_segment could not tell apart, which is how the gesture
     ended up inside the fs column.
     """
@@ -1934,7 +1934,7 @@ def parse_segment(
         add_hand_from_lexical_item_parentheses(lexical_item, attrs)
         # Clean each component on its own. Splitting a marker value out of the
         # text can leave the material beside it holding one half of a bracket
-        # pair -- ges:\u3057\u3073\u308c\u308b(\u732b) leaves "(\u732b))" -- and cleanup_lexical_item only
+        # pair (ges:\u3057\u3073\u308c\u308b(\u732b) leaves "(\u732b))") and cleanup_lexical_item only
         # balances brackets across the whole string, so it cannot see that.
         lexical_item = _normalise_lexical_components(lexical_item)
 

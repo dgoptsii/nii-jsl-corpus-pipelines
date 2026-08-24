@@ -1,37 +1,15 @@
-"""Signer metadata: identity, handedness and age.
+"""Signer metadata: identity, handedness, age and gender.
 
-One optional CSV drives all of it, committed alongside the code so the
-decisions stay reviewable:
+Driven by one optional CSV (``input_lists/signers.csv``: ``signer_id``,
+``handedness``, ``age``, ``gender``). Only the ID is required; blank handedness
+means right-handed and blank age reports the signer as "unknown". Column names
+and IDs are matched loosely: case, punctuation and zero-padding are ignored,
+and the prefix ``FO_07`` matches ``FO_07_FK_40F``.
 
-``input_lists/signers.csv``
-
-    signer_id,handedness,age
-    FO_07_FK_40F,left,34
-    GM_02_XX_60M,,67
-
-Only the ID column is required. A blank ``handedness`` means right-handed; a
-blank ``age`` means the signer is reported as "unknown" in the age table rather
-than dropped. The file only has to list what differs from the defaults.
-
-Column names are matched loosely, so the file can come from a spreadsheet
-someone else maintains:
-
-    id          signer_id / speaker_id / participant_id / signer / speaker / id
-    handedness  handedness / hand / dominant_hand   ("left" / "right" / "L" / "R")
-                or left_handed / is_left_handed     (TRUE / 1 / yes / x)
-    age         age / age_years / years
-    gender      gender / sex / 性 / 性別            ("M" / "F" / 男 / 女)
-
-A signer is identified by the participant ID that already exists in the parsed
-annotation CSVs, e.g. ``FO_07_FK_40F``. Matching is deliberately forgiving:
-case and punctuation are ignored, zero-padding is ignored, and a listed prefix
-such as ``FO_07`` also matches ``FO_07_FK_40F``.
-
-**Age and gender come from the ID itself.** ``FO_08_FK_50F`` is a 50-band
-female signer, and that suffix is the corpus's own record, written when the
-recording was made. It is therefore preferred over the signers file, which
-only supplies age and gender for IDs that lack the suffix. Handedness is not in
-the ID, so the file remains the only source for it.
+Age and gender are taken from the ID suffix when it has one (``FO_08_FK_50F``
+is a 50-band female signer), since that is the corpus's own record written at
+recording time; the file supplies them only for IDs without a suffix.
+Handedness is never in the ID, so the file is its only source.
 """
 
 from __future__ import annotations

@@ -1,25 +1,15 @@
 #!/usr/bin/env python3
 """STEP 3 (optional, standalone): write new ELAN files from parsed CSVs.
 
-You only need this if you are running the steps separately -- typically because
-you hand-corrected the parsed CSVs from step 2. The normal path is
-run_pipeline.py, which does all three steps in one go.
+Only needed when running the steps separately, typically after hand-correcting
+the parsed CSVs from step 2; run_pipeline.py does all three in one go.
 
-    python step3_build_elan.py CORPUS_FOLDER -parsed_csv_folder PARSED_CSV_FOLDER -output_folder OUTPUT_FOLDER
+    python step3_build_elan.py CORPUS_FOLDER -parsed_csv_folder ./parsed/parsed \
+        -output_folder ./parsed_elan_files
 
-Example
--------
-    python step3_build_elan.py ./corpus -parsed_csv_folder ./parsed/parsed -output_folder ./parsed_elan_files
-
-Input
------
-    CORPUS_FOLDER/**/*.eaf                the original ELAN files
-    PARSED_CSV_FOLDER/*_parsed.csv        from step2_parse.py
-
-Output
-------
-    OUTPUT_FOLDER/<name>_parsed.eaf       original tiers + parsed child tiers
-    OUTPUT_FOLDER/tier_reports/           with --save-debug
+Reads the original ``CORPUS_FOLDER/**/*.eaf`` and ``*_parsed.csv`` from step 2.
+Writes ``OUTPUT_FOLDER/<name>_parsed.eaf`` (original tiers plus parsed child
+tiers) and, with ``--save-debug``, ``OUTPUT_FOLDER/tier_reports/``.
 """
 
 from __future__ import annotations

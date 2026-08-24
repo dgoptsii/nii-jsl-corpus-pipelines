@@ -12,10 +12,8 @@ from typing import Dict, List, Tuple
 # ===========================================================================
 # LANDMARKS THAT ARE ACTUALLY STORED
 # ===========================================================================
-# MediaPipe reports 33 pose + 21 per hand + 468/478 face points per frame.
-# The signing-space analysis uses a small fraction of those, so only that
-# fraction is written to disk: roughly 50 floats per frame instead of ~1200,
-# which is about a 24x reduction in file size and load time.
+# MediaPipe reports ~1200 floats per frame; only the ~50 the analysis uses are
+# stored, a 24x reduction in file size and load time.
 
 #: Pose landmarks kept, in MediaPipe's own indexing.
 POSE_LANDMARK_IDS: List[int] = [
@@ -55,12 +53,9 @@ HAND_NAMES: List[str] = [
 
 HAND_INDEX: Dict[str, int] = {name: i for i, name in enumerate(HAND_NAMES)}
 
-#: Which of the stored hand points are counted into signing-space regions:
-#: every point that is stored. The thumb knuckle used to be excluded, and
-#: optional, for comparability with an earlier version of the pipeline. It is
-#: now always counted -- thumb position distinguishes real handshapes, and an
-#: abducted thumb often sits in a different region from the other knuckles, so
-#: leaving it out discarded a genuine part of the signing space.
+#: Every stored hand point is counted into a region, the thumb knuckle
+#: included: an abducted thumb often sits in a different region from the other
+#: knuckles, so leaving it out discarded real signing space.
 REGION_COUNT_HAND_POINTS: List[str] = list(HAND_NAMES)
 
 #: Face landmarks kept, in MediaPipe's own indexing.
@@ -118,10 +113,9 @@ FILL_EDGE_MISSING_FACES = True
 # ===========================================================================
 # YOLO PERSON SEGMENTATION
 # ===========================================================================
-# Each clip is cropped from a two-person recording, so the other signer can be
-# partly visible. YOLO segments people, the non-target person is painted out
-# with a static background estimate, and any hand that does not sit on the
-# target's silhouette is rejected.
+# Clips are cropped from two-person recordings. YOLO segments people, the
+# non-target signer is painted out, and hands off the target's silhouette are
+# rejected.
 
 USE_YOLO_PERSON_MASK = True
 YOLO_SEG_MODEL = "yolov8n-seg.pt"
@@ -147,10 +141,9 @@ HAND_GATE_MIN_INSIDE_FRACTION = 0.6
 # ===========================================================================
 # YAW CORRECTION
 # ===========================================================================
-# Shoulder normalisation removes camera roll but is blind to yaw: a signer
-# filmed from the side has a torso turned away from the lens, which compresses
-# the horizontal axis. Yaw is estimated from the shoulder depth difference and
-# undone by stretching x.
+# Shoulder normalisation removes camera roll but is blind to yaw: a torso
+# turned away from the lens compresses the horizontal axis. Yaw is estimated
+# from the shoulder depth difference and undone by stretching x.
 
 YAW_ENABLED = True
 YAW_GAIN = 1.0
@@ -175,9 +168,8 @@ MIN_COS_FOR_UNFORESHORTEN = 0.34
 # ===========================================================================
 # SIGNING-SPACE GEOMETRY
 # ===========================================================================
-# All coordinates below are in shoulder-normalised units: the shoulder midpoint
-# is the origin, the shoulders lie on the x-axis one unit apart, and y grows
-# downward.
+# Coordinates below are in shoulder-normalised units: shoulder midpoint at the
+# origin, shoulders on the x-axis one unit apart, y growing downward.
 
 CENTER_SIDE_EXTRA = 0.00
 SIDE_PERIPHERY_WIDTH = 0.50
@@ -266,9 +258,8 @@ MIRROR_REGION: Dict[str, str] = {
 # ===========================================================================
 # HANDS
 # ===========================================================================
-# After mirroring, hands are named by role rather than by side: the dominant
-# hand of a left-handed signer and of a right-handed signer end up in the same
-# column, so their distributions can be pooled.
+# After mirroring, hands are named by role rather than side, so left- and
+# right-handers' dominant hands land in the same column and pool correctly.
 
 HAND_ROLES: List[str] = ["dominant", "non_dominant"]
 
@@ -286,16 +277,10 @@ BOOTSTRAP_CONFIDENCE = 0.95
 BOOTSTRAP_SEED = 20260806
 
 #: Below this many signers a bootstrap interval is itself unstable; tables flag
-#: those cells rather than hiding the problem.
-#:
-#: Five is not arbitrary. A bootstrap round draws n signers from n with
-#: replacement, so the number of genuinely distinct resamples it can produce is
-#: C(2n-1, n): 10 at three signers, 35 at four, 126 at five, 6,435 at eight.
-#: With three signers the 2,000 iterations can only land on ten distinct values,
-#: so the percentiles are read off a ten-point staircase and the interval
-#: endpoints jump rather than move; one round in nine is a single signer cloned
-#: three times. The interval is still computed -- it is the honest width given
-#: the evidence -- but calling it reliable would not be.
+#: those cells. Five is not arbitrary: a round draws n signers from n with
+#: replacement, so only C(2n-1, n) distinct resamples exist, 10 at three signers
+#: against 126 at five. With three, the percentiles are read off a ten-point
+#: staircase and the endpoints jump rather than move.
 MIN_SIGNERS_FOR_STABLE_CI = 5
 
 #: A cell needs at least this many signers for an interval to be computed at
@@ -303,22 +288,16 @@ MIN_SIGNERS_FOR_STABLE_CI = 5
 MIN_SIGNERS_FOR_ANY_CI = 2
 
 #: Reported alongside the boolean flag, so a reader can see how much to
-#: discount a cell rather than only whether to.
-#:   solid      -- enough signers that the interval is stable
-#:   indicative -- computed, but the resample space is small; read the width,
-#:                 not the endpoints
-#:   unstable   -- barely more than one signer; treat as no interval
+#: discount a cell rather than only whether to: ``solid`` is stable,
+#: ``indicative`` means read the width and not the endpoints, ``unstable``
+#: means treat it as no interval.
 CI_QUALITY_TIERS = [(8, "solid"), (MIN_SIGNERS_FOR_STABLE_CI, "usable"),
                     (3, "indicative"), (MIN_SIGNERS_FOR_ANY_CI, "unstable")]
 
 #: Age bands, matching the corpus. The spreadsheet records a decade band per
-#: signer (20, 30, ... 80) rather than an exact age, so the bands here are the
-#: same decades - regrouping them into anything coarser would be inventing a
-#: precision the source does not have.
-#:
-#: ``<20`` exists only as a guard: no signer in the corpus is under 20, so it
-#: never appears, but an out-of-range age lands there rather than silently
-#: becoming "unknown". ``80`` is open-ended upward for the same reason.
+#: signer rather than an exact age, so the bands are the same decades; anything
+#: coarser would invent a precision the source lacks. ``<20`` is only a guard,
+#: so an out-of-range age lands there rather than becoming "unknown".
 AGE_GROUPS: List[Tuple[str, float, float]] = [
     ("<20", 0, 20),
     ("20", 20, 30),
@@ -330,19 +309,16 @@ AGE_GROUPS: List[Tuple[str, float, float]] = [
     ("80", 80, 200),
 ]
 
-#: A coarse two-way split, reported alongside the decades.
-#:
-#: Seven decades x seven prefectures x two genders splits 122 signers very thin,
-#: and a cell with two people supports no claim. This split keeps enough signers
-#: per cell for the bootstrap to mean something, so it is the one to use for the
-#: cross-table and for anything going on a poster. The decades stay available in
-#: their own table for describing the corpus.
+#: A coarse two-way split, reported alongside the decades. Seven decades x
+#: seven prefectures x two genders splits 122 signers too thin for the
+#: bootstrap to mean anything, so this is the split to use for the cross-table
+#: and for a poster.
 AGE_BANDS: List[Tuple[str, float, float]] = [
     ("<50", 0, 50),
     ("50+", 50, 200),
 ]
 
-#: Gender is carried through purely as a label - it changes no geometry.
+#: Gender is carried through purely as a label; it changes no geometry.
 DEFAULT_GENDER = "unknown"
 
 
@@ -363,9 +339,8 @@ FIGURES_SUBFOLDER = "figures"
 DEBUG_SUBFOLDER = "debug"
 DEBUG_VIDEO_FILE = "signing_space.mp4"
 
-#: How many clips get a diagnostic render when one is requested. Rendering every
-#: clip costs more time than the analysis itself and produces more video than the
-#: corpus, and a handful is enough to see whether tracking is sane. 0 = no cap.
+#: How many clips get a diagnostic render when one is requested. Rendering all
+#: of them costs more than the analysis itself. 0 = no cap.
 DEFAULT_DEBUG_LIMIT = 5
 
 LANDMARKS_FILE = "landmarks.npz"

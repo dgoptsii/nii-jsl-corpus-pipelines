@@ -1,32 +1,20 @@
 #!/usr/bin/env python3
-"""STEP 3 - detect and store the reduced landmark set for every clip.
-
-Only the points the analysis uses are written to disk - shoulders, elbows,
-wrists, the knuckle of every finger, chin and head top - about 50 floats per
-frame instead of MediaPipe's ~1200.
+"""STEP 3: detect and store the reduced landmark set for every clip.
 
     python3 step3_extract_landmarks.py OUTPUT_FOLDER [options]
 
-Detection cost is reduced separately from storage: ``--model-complexity 1`` and
-the unrefined face mesh are the defaults, since the refined 478-point mesh only
-improves eyes and lips, which are unused here. Pass ``--model-complexity 2
---refine-face`` to reproduce the older, slower settings exactly.
+Only the points the analysis uses are written: shoulders, elbows, wrists, the
+knuckle of every finger, chin and head top, about 50 floats per frame instead
+of MediaPipe's ~1200. Detection cost is reduced separately from storage;
+``--model-complexity 2 --refine-face`` restores the older, slower settings.
 
-This stage is the slow one, and it is CPU-bound: MediaPipe Holistic has no GPU
-path in the Python package. Clips are independent, so ``--workers N`` spreads
-them over N processes, which is where a many-core server pays off:
+The slow stage, and CPU-bound: MediaPipe Holistic has no GPU path in the Python
+package. Clips are independent, so ``--workers N`` spreads them over N
+processes.
 
-    python3 step3_extract_landmarks.py OUTPUT_FOLDER --workers auto
-
-Output
-------
-    OUT/landmarks/<CLIP_ID>/landmarks.npz
-    OUT/landmarks/<CLIP_ID>/landmarks_meta.json
-
-With ``--save-debug-images`` (off by default), also:
-
-    OUT/debug/<CLIP_ID>/yolo_person_masks.jpg   which signer YOLO kept
-    OUT/debug/<CLIP_ID>/mediapipe_input.jpg     the frame MediaPipe was given
+Output: ``OUT/landmarks/<CLIP_ID>/landmarks.npz`` and ``landmarks_meta.json``;
+with ``--save-debug-images``, also ``OUT/debug/<CLIP_ID>/yolo_person_masks.jpg``
+and ``mediapipe_input.jpg``.
 """
 
 from __future__ import annotations

@@ -1,20 +1,15 @@
 #!/usr/bin/env python3
-"""STEP 2 - cut a cropped video clip for every selected annotation.
-
-Source recordings show two signers in a 2x2 layout; only the upper panel of the
-relevant half is kept, so each clip contains one signer.
+"""STEP 2: cut a cropped video clip for every selected annotation.
 
     python3 step2_extract_clips.py OUTPUT_FOLDER --video-root /path/to/videos
 
-The clip index written here is what carries signer identity, handedness and age
-group into every later stage, so the analysis never has to re-join annotations.
-
+Source recordings show two signers in a 2x2 layout; only the upper panel of the
+relevant half is kept, so each clip holds one signer. The clip index written
+here carries signer identity, handedness and age group into every later stage.
 Requires ffmpeg and ffprobe on PATH.
 
-Output
-------
-    OUT/clips/<KEYWORD>/<REGION>/<SOURCE_FILE>/<SIDE>/<KEYWORD>_<ROW>.mp4
-    OUT/clips/clip_index.csv
+Output: ``OUT/clips/<KEYWORD>/<REGION>/<SOURCE_FILE>/<SIDE>/<KEYWORD>_<ROW>.mp4``
+and ``OUT/clips/clip_index.csv``
 """
 
 from __future__ import annotations

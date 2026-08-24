@@ -1,26 +1,18 @@
 """Locate the ELAN files a run should process.
 
-Two search modes are supported:
-
-* ``recursive=True``  - walk the whole folder tree (``**/*.eaf``);
-* ``recursive=False`` - read only the files sitting directly in the folder.
-
-An optional *files of interest* text file narrows the selection. Each line of
-that file may be a bare file stem (``FO_01-02_AniN``), a file name
-(``FO_01-02_AniN.eaf``), a name produced by an earlier stage
-(``FO_01-02_AniN_word_annotations.csv``) or a full path; only the stem is used
-for matching, and matching is case- and punctuation-insensitive.
+``recursive=True`` walks the whole tree; ``recursive=False`` reads only the
+files sitting directly in the folder. An optional *files of interest* text file
+narrows the selection: each line may be a bare stem, a file name, a name
+produced by an earlier stage or a full path, since only the stem is used and
+matching ignores case and punctuation.
 
 **One file per name.** The corpus tree holds the same recording in several
-places -- the region folder, a gesture-annotation pass, an old copy, a
-file-sync conflicted copy -- and those copies are *different versions*, not
-byte-identical duplicates, so they cannot be told apart by content. Every stage
-downstream names its output after the input stem, so parsing more than one copy
-of a name means the later one silently overwrites the earlier one and the
-result depends on directory-walk order.
-
-The corpus is expected to contain **one file per recording**. 
-
+places (region folder, gesture-annotation pass, old copy, file-sync conflicted
+copy) and those copies are different *versions*, not byte-identical duplicates.
+Every stage names its output after the input stem, so parsing two copies of one
+name means the later silently overwrites the earlier, and the result depends on
+directory-walk order. The corpus is therefore expected to hold one file per
+recording.
 """
 
 from __future__ import annotations
@@ -52,7 +44,7 @@ class DiscoveryResult:
     """The outcome of an ELAN file search.
 
     ``files`` holds one path per stem. ``duplicate_stems`` lists every copy of
-    any name that was found more than once -- which the corpus is not supposed
+    any name that was found more than once: which the corpus is not supposed
     to contain, and which the caller must resolve before trusting a run.
     """
 
@@ -164,7 +156,7 @@ def write_manifest(discovery: "DiscoveryResult", path: Path) -> Path:
     The corpus-statistics and signing-space pipelines read this instead of
     walking the corpus themselves, so all three agree on which copy of each
     recording is the real one. Without it, each pipeline reimplements the
-    selection rule and they drift apart silently -- which is precisely the
+    selection rule and they drift apart silently: which is precisely the
     failure this file exists to prevent.
 
     Written even for ``--list-only``, so the manifest can be refreshed without

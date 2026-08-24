@@ -1,20 +1,12 @@
 """LaTeX versions of the summary tables, written next to the CSVs.
 
 The report reads these directly out of ``output/tables``, so rerunning step 5
-updates the report. Nothing is copied into the report folder by hand -- a copied
-table is a table that goes stale silently, and a stale number in a typeset PDF
-is invisible.
-
-Each file is a **complete** ``tabular`` environment. A fragment ending in a row
-break would break the ``\\bottomrule`` of whatever includes it, which is a hard
-error to read once it is three files deep.
+updates the report and nothing is copied by hand. Each file is a **complete**
+``tabular`` environment: a fragment ending in a row break would break the
+``\bottomrule`` of whatever includes it.
 
 Three commands are expected from the including document, so the category names
-can be styled in one place:
-
-    \\newcommand{\\CL}{\\textsc{cl}}
-    \\newcommand{\\FS}{\\textsc{fs}}
-    \\newcommand{\\LEX}{lexical}
+are styled in one place: ``\CL``, ``\FS``, ``\LEX``.
 """
 
 from __future__ import annotations
@@ -89,7 +81,7 @@ def _level_key(level: object):
 
 
 # ===========================================================================
-# TABLE 1 -- prefecture x category, both hands side by side
+# TABLE 1: prefecture x category, both hands side by side
 # ===========================================================================
 
 def region_table(by_region: pd.DataFrame, path: Path) -> Optional[Path]:
@@ -143,7 +135,7 @@ def region_table(by_region: pd.DataFrame, path: Path) -> Optional[Path]:
 
 
 # ===========================================================================
-# TABLE 2 -- age band and gender
+# TABLE 2: age band and gender
 # ===========================================================================
 
 def age_gender_table(by_age_band: pd.DataFrame, by_gender: pd.DataFrame,
@@ -203,7 +195,7 @@ def age_gender_table(by_age_band: pd.DataFrame, by_gender: pd.DataFrame,
 
 
 # ===========================================================================
-# TABLE 3 -- central torso against the periphery
+# TABLE 3: central torso against the periphery
 # ===========================================================================
 
 def central_table(summary: pd.DataFrame, path: Path) -> Optional[Path]:
@@ -272,7 +264,7 @@ CATEGORY_ORDER = ["CL", "LEXICAL_ITEM", "FS"]
 def _level_name(group: str, level: object) -> str:
     """A level as the report prints it: prefecture names, category macros.
 
-    Macros are emitted with a trailing ``{}`` so a following space survives --
+    Macros are emitted with a trailing ``{}`` so a following space survives:
     ``\\CL vs`` swallows it and typesets ``CLvs``.
     """
     if group == "region_code":

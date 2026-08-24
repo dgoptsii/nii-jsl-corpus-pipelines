@@ -1,16 +1,11 @@
 """Turn stored landmarks into per-frame signing-space region counts.
 
-This is where handedness is resolved. The clip's landmarks are normalised, yaw
-is undone, and for a left-handed signer the horizontal axis is negated so their
-signing space lands where a right-hander's does. The two hands are then written
-out by ROLE rather than by side:
-
-    dominant_*      the signer's dominant hand  (right hand for a right-hander)
-    non_dominant_*  the other hand
-
-so that left- and right-handed signers pool into one distribution and no column
-label can mislead a reader. ``handedness`` is kept on every row, so the original
-left/right identity remains recoverable.
+This is where handedness is resolved: landmarks are normalised, yaw undone, and
+for a left-hander the horizontal axis negated so their signing space lands
+where a right-hander's does. The hands are then written out by ROLE
+(``dominant_*`` / ``non_dominant_*``) rather than by side, so left- and
+right-handers pool into one distribution. ``handedness`` is kept on every row,
+so the original left/right identity remains recoverable.
 """
 
 from __future__ import annotations

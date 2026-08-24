@@ -1,4 +1,4 @@
-"""Step 5 -- figures.
+"""Step 5: figures.
 
 Draws every figure from the CSVs written by steps 3 and 4, so the plots can be
 restyled without recomputing anything. A figure whose input table is missing is

@@ -1,23 +1,15 @@
 """Optional diagnostic renders: annotated example videos and YOLO mask images.
 
-Nothing here is needed to produce a table or a figure. It exists to answer the
-question "is the pipeline actually seeing what I think it is seeing?", which no
-summary statistic can answer - a hand tracked onto the wrong signer, a chin
-anchor that jumped, or a yaw estimate pulling the space sideways all show up as
-plausible numbers.
+Nothing here is needed to produce a table or a figure. It answers "is the
+pipeline seeing what I think it is seeing?", which no summary statistic can: a
+hand tracked onto the wrong signer, a jumped chin anchor and a sheared yaw
+estimate all produce plausible numbers.
 
-Two renders, both off by default because they are slow and large:
-
-* **example video** (:func:`render_clip_debug_video`) - the clip beside the
-  normalised signing space, frame by frame, with every counted hand point
-  coloured by the region it was assigned to. Written by step 4, where the
-  classification happens.
-* **person-mask images** (:func:`save_person_mask_debug`) - the first frame with
-  YOLO's target and non-target silhouettes drawn, and the masked frame that was
-  actually handed to MediaPipe. Written by step 3, where the masking happens.
-
-Both mirror the reference implementation this pipeline replaced, so a render
-from either can be compared side by side.
+Both are off by default because they are slow and large:
+:func:`render_clip_debug_video` (written by step 4) draws the clip beside the
+normalised space with every counted point coloured by its region;
+:func:`save_person_mask_debug` (written by step 3) draws YOLO's target and
+non-target silhouettes and the masked frame MediaPipe received.
 """
 
 from __future__ import annotations

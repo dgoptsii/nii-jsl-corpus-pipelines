@@ -1,22 +1,15 @@
 #!/usr/bin/env python3
-"""STEP 1 - select the parsed annotation rows to analyse.
+"""STEP 1: select the parsed annotation rows to analyse.
 
-Reads the ``*_parsed.csv`` files from the annotation-parsing pipeline and, for
-each requested keyword column, keeps the rows where that column is non-empty.
+    python3 step1_select_rows.py PARSED_FOLDER -output_folder OUT \
+        --keywords cl fs pt --regions FO GM
 
-    python3 step1_select_rows.py PARSED_FOLDER -output_folder OUT [options]
-
-Example
--------
-    python3 step1_select_rows.py ./parsed_annotations/parsed \\
-        -output_folder ./out --keywords cl fs pt --regions FO GM
-
+Reads the ``*_parsed.csv`` files from the parsing pipeline and, for each
+requested keyword column, keeps the rows where that column is non-empty.
 ``--lexical-only`` keeps only plain lexical rows for the ``lexical_item``
-keyword: rows where a lexical item is present and every marker column is empty.
+keyword: a lexical item present and every marker column empty.
 
-Output
-------
-    OUT/key_rows/<KEYWORD>/ALL_<KEYWORD>_rows.csv
+Output: ``OUT/key_rows/<KEYWORD>/ALL_<KEYWORD>_rows.csv``
 """
 
 from __future__ import annotations

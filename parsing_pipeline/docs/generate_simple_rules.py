@@ -45,7 +45,7 @@ SECTIONS: List[Dict[str, object]] = [
                      "猫＋犬", "猫&犬", "猫／犬"],
     },
     {
-        "title": "PT — pointing",
+        "title": "PT: pointing",
         "columns": "pt",
         "note": "The lexical item of a pointing annotation is always \\anno{pt} + its number. "
                 "Japanese material written next to PT names the \\emph{referent} being pointed at, "
@@ -55,7 +55,7 @@ SECTIONS: List[Dict[str, object]] = [
                      "両手:pt", "両手:pt3", "pt3(dw:5種類)"],
     },
     {
-        "title": "DW — depicting word (DR is the same keyword)",
+        "title": "DW: depicting word (DR is the same keyword)",
         "columns": "dw",
         "note": "\\kw{DR} is rewritten to \\kw{DW} everywhere, including inside compact forms. "
                 "A depicting word is a sign, so its value is kept as lexical material.",
@@ -64,20 +64,20 @@ SECTIONS: List[Dict[str, object]] = [
                      "ptdw", "ptdw:これら", "ptdw(みんな)"],
     },
     {
-        "title": "FS — fingerspelling",
+        "title": "FS: fingerspelling",
         "columns": "fs",
         "note": "Fingerspelled material is lexical, so it is recorded in \\pcol{fs} "
                 "\\emph{and} kept in \\pcol{lexical\\_item}.",
         "examples": ["fs:あ", "FSあ", "fs:お(M:ロースポーク)", "fs:あ+aw:い"],
     },
     {
-        "title": "AW — air writing",
+        "title": "AW: air writing",
         "columns": "aw",
         "note": "Behaves exactly like \\kw{FS}: recorded in its own column and kept as lexical material.",
         "examples": ["aw:あれ", "AW あれ"],
     },
     {
-        "title": "LH and RH — hand attribution",
+        "title": "LH and RH: hand attribution",
         "columns": "lh, rh",
         "note": "Markers: \\anno{LH} \\anno{L} \\anno{左手} \\anno{左} and "
                 "\\anno{RH} \\anno{R} \\anno{右手} \\anno{右}. "
@@ -87,7 +87,7 @@ SECTIONS: List[Dict[str, object]] = [
                      "二つ目:LH:人差し指"],
     },
     {
-        "title": "CL — classifier / depiction",
+        "title": "CL: classifier / depiction",
         "columns": "cl",
         "note": "The value ends at the next top-level separator. "
                 "A gesture note inside a classifier is lifted into \\pcol{ges}.",
@@ -95,7 +95,7 @@ SECTIONS: List[Dict[str, object]] = [
                      "cl:人型(説明):(ges:)", "cl:人型:(猫)(ges:あ)"],
     },
     {
-        "title": "M — mouth action (口形 / 口型)",
+        "title": "M: mouth action (口形 / 口型)",
         "columns": "m",
         "note": "Separator may be \\anno{:} \\anno{：} \\anno{=} \\anno{＝} or the particle \\anno{は}. "
                 "Mouth notes are extracted before the blocking markers are checked.",
@@ -103,20 +103,20 @@ SECTIONS: List[Dict[str, object]] = [
                      "cl:包丁で切る(口型:きった)", "cl:包丁で切る(口型:un(きった)"],
     },
     {
-        "title": "GES — gesture",
+        "title": "GES: gesture",
         "columns": "ges",
         "note": "Recognised as \\anno{ges:value}, \\anno{GES(value)}, or a bare marker (\\anno{TRUE}).",
         "examples": ["ges:へえ", "GES(あ)", "ges"],
     },
     {
-        "title": "NMM — non-manual marker (and NOD)",
+        "title": "NMM: non-manual marker (and NOD)",
         "columns": "nmm",
         "note": "A value of \\anno{neg} also sets \\pcol{neg}. \\anno{nod} is shorthand for "
                 "\\pcol{nmm}~=~\\anno{nod}. NMM values are \\emph{not} counted as lexical material.",
         "examples": ["nmm:眉上げ", "NMM(neg)", "nmm", "nod", "nmm:眉上げ+猫"],
     },
     {
-        "title": "REP — repetition (REPEAT and $\\times n$ are the same)",
+        "title": "REP: repetition (REPEAT and $\\times n$ are the same)",
         "columns": "rep",
         "note": "Value format: \\anno{word(count;hand)}, where hand is \\anno{L}, \\anno{R} or "
                 "\\anno{N} for unspecified. A missing count means 1.",
@@ -124,37 +124,37 @@ SECTIONS: List[Dict[str, object]] = [
                      "RH:男＊２", "LH:男*3", "RH(男)*2", "広がる(repeat)", "pt(rep2)"],
     },
     {
-        "title": "STOP, HOLD, KEEP, INDEX — articulation flags",
+        "title": "STOP, HOLD, KEEP and INDEX: articulation flags",
         "columns": "stop, hold, keep, index",
         "note": "All boolean (\\anno{TRUE}). Recognised bare, with a colon, or in parentheses "
                 "attached to a sign. The sign itself survives into \\pcol{lexical\\_item}.",
         "examples": ["猫 stop", "別(hold)", "猫 keep", "見る(index)"],
     },
     {
-        "title": "D, FAL, UN — blocking markers",
+        "title": "D, FAL and UN: blocking markers",
         "columns": "d, fal, un",
         "note": "\\kw{D} = delete, \\kw{FAL} = false start, \\kw{UN} = unclear. "
-                "When any of these fires, \\textbf{every other column is cleared} — "
+                "When any of these fires, \\textbf{every other column is cleared}: "
                 "the marker says the content of the annotation cannot be trusted.",
         "examples": ["d", "D:fs:て(RH)", "fal", "FAL:fs:あ", "cl:猫の形(fal)",
                      "un", "UN:RH:猫", "UN(FAL)", "FAL(UN)"],
     },
     {
-        "title": "QM — question marking",
+        "title": "QM: question marking",
         "columns": "qm",
         "note": "Set by an explicit \\kw{QM} or by \\anno{?} / \\anno{？} anywhere in the annotation. "
                 "Not set when a blocking marker is present.",
         "examples": ["猫?", "猫？", "猫 qm"],
     },
     {
-        "title": "PAST and NEG — grammatical flags",
+        "title": "PAST and NEG: grammatical flags",
         "columns": "past, neg",
         "note": "Matched as standalone Latin words, so they do not fire inside a longer word. "
                 "The marker is removed and the sign is preserved.",
         "examples": ["食べる PAST", "食べる NEG", "食べる past neg"],
     },
     {
-        "title": "Compound signs — \\anno{<} \\anno{>}",
+        "title": "Compound signs: \\anno{<} \\anno{>}",
         "columns": "compound",
         "note": "An opening bracket starts a group that runs to the closing bracket. "
                 "Every row in the group is copied verbatim into \\pcol{compound} and is not parsed, "
@@ -162,7 +162,7 @@ SECTIONS: List[Dict[str, object]] = [
         "examples": ["<家", "裏>"],
     },
     {
-        "title": "Ambiguity — rows sent to manual review",
+        "title": "Ambiguity: rows sent to manual review",
         "columns": "ambiguous",
         "note": "A row is ambiguous if it has more than one internal slash, normalises to nothing, "
                 "consists only of \\anno{ー}, or still contains unparsed non-Japanese text. "

@@ -1,15 +1,11 @@
 """Aggregation and uncertainty for signing-space statistics.
 
-Every interval in this module is a bootstrap confidence interval resampled over
-**signers**, not over clips. One signer contributes many clips, so clips are not
-independent observations; a clip-level interval would come out far too narrow
-and would make a result resting on two or three people look precise. Resampling
-signers answers the question that actually matters: *how much would this number
-move if we had recorded a different set of people?*
-
-Every table therefore carries ``n_signers`` next to its interval, and cells
-below :data:`config.MIN_SIGNERS_FOR_STABLE_CI` signers are flagged, because a
-bootstrap over very few signers is itself unstable.
+Every interval here is a bootstrap CI resampled over **signers**, not over
+clips. One signer contributes many clips, so clips are not independent
+observations and a clip-level interval would come out far too narrow. Every
+table carries ``n_signers`` next to its interval, and cells below
+:data:`config.MIN_SIGNERS_FOR_STABLE_CI` are flagged, since a bootstrap over
+very few signers is itself unstable.
 """
 
 from __future__ import annotations
@@ -106,22 +102,15 @@ def bootstrap_difference(
 ) -> Dict[str, float]:
     """Resample two groups independently and describe their difference.
 
-    Asking whether two confidence intervals overlap is the wrong test, in both
-    directions. It is *too strict*: two 95\\% intervals can overlap while the
-    difference is reliably non-zero, because the comparison effectively spends
-    the error budget twice. And it is *lossy*: overlap is a yes/no answer to a
-    question that has a magnitude, so "these two prefectures differ by 0.84
-    regions, and 9 resamples in 10 put A above B" collapses to "overlapping".
+    Asking whether two confidence intervals overlap is the wrong test in both
+    directions: too strict, since two 95% intervals can overlap while the
+    difference is reliably non-zero, and lossy, since overlap is a yes/no answer
+    to a question that has a magnitude.
 
-    Resampling the difference itself avoids both. Each round draws signers with
-    replacement from each group separately, recomputes both statistics, and
-    keeps the difference; the interval over those differences is the answer, and
-    the share of rounds falling on one side is a direct statement of how
-    consistently one group exceeds the other.
-
-    Returns the observed difference, its interval, ``p_a_greater`` (the share of
-    resamples with A above B), and ``separates`` -- whether the interval of the
-    difference excludes zero.
+    Each round instead draws signers with replacement from each group separately
+    and keeps the difference. Returns the observed difference, its interval,
+    ``p_a_greater`` (the share of resamples with A above B), and ``separates``,
+    whether that interval excludes zero.
     """
     empty = {"difference": float("nan"), "diff_ci_low": float("nan"),
              "diff_ci_high": float("nan"), "p_a_greater": float("nan"),
@@ -228,21 +217,15 @@ def effect_spread(clip_table: pd.DataFrame,
                   min_signers: int = MIN_SIGNERS_FOR_STABLE_CI) -> pd.DataFrame:
     """How far apart a grouping's levels are, in the units of the measure.
 
-    Counting how many intervals fail to overlap answers "can we tell these
-    apart?", which collapses to zero for any grouping with few levels and hides
-    a real difference in *size*: prefecture and gender both scored zero
-    separating pairs, yet the prefecture means span a whole region and the
-    gender means span a fifth of one.
+    Counting non-overlapping intervals answers "can we tell these apart?", which
+    collapses to zero for any grouping with few levels and hides a real difference
+    in size. ``spread``, the gap between the highest and lowest level mean, says
+    how much the grouping moves the answer instead.
 
-    ``spread`` -- the gap between the highest and lowest level mean -- says how
-    much the grouping moves the answer, in regions per sign, so it can be read
-    against the thing being explained. It is deliberately **not** an overlap
-    percentage: interval width is driven by how many signers a level happens to
-    have, so an overlap measure makes a thinly-sampled level look *more* similar
-    to everything else, which is backwards.
-
-    Levels below ``min_signers`` are excluded, since a level resting on three
-    signers can sit anywhere and would inflate the spread by itself.
+    Deliberately not an overlap percentage: interval width is driven by how many
+    signers a level happens to have, so an overlap measure makes a thinly-sampled
+    level look more similar to everything else. Levels below ``min_signers`` are
+    excluded, since one resting on three signers can sit anywhere.
     """
     frame = clip_table[clip_table["hand_role"] == hand_role]
     if "hand_present" in frame.columns:
@@ -279,7 +262,7 @@ def effect_spread(clip_table: pd.DataFrame,
 
 
 def comparison_scoreboard(comparisons: pd.DataFrame) -> pd.DataFrame:
-    """How many pairs separate, per grouping -- the summary the poster prints.
+    """How many pairs separate, per grouping, the summary the poster prints.
 
     Counted from the interval of the *difference*, not from interval overlap, so
     the number is not the artificially conservative one.
@@ -388,21 +371,18 @@ def summarise_by(
 ) -> pd.DataFrame:
     """Number of annotations, unique signers and average regions per group.
 
-    This is the shape of both requested tables; only ``group_columns`` differs
+    The shape of both requested tables; only ``group_columns`` differs
     (``["region_code", "keyword"]`` versus ``["age_group", "keyword"]``).
 
     **The two hands are summarised separately.** ``hand_role`` is always part of
-    the grouping, so every cell appears twice: once for the dominant hand and
-    once for the non-dominant one. Pooling them would be meaningless - the
-    dominant hand carries the sign while the non-dominant one is often idle or
-    acting as a base - and would also mix a hand that is present in every clip
-    with one that is not.
+    the grouping, so every cell appears twice. Pooling would be meaningless: the
+    dominant hand carries the sign while the non-dominant one is often idle, and
+    it would mix a hand present in every clip with one that is not.
 
-    That last point is why ``n_annotations`` differs between the two roles: a
-    row counts only the clips in which *that* hand was detected. ``n_clips`` is
-    the number of clips in the cell regardless, and ``hand_present_percent`` is
-    the share of them in which the hand appeared at all - a direct measure of
-    how two-handed the keyword is.
+    ``n_annotations`` therefore counts only the clips in which *that* hand was
+    detected; ``n_clips`` is the cell's full denominator and
+    ``hand_present_percent`` the ratio, a direct measure of how two-handed the
+    keyword is.
     """
     group_columns = list(group_columns)
     if isinstance(hand_roles, str):

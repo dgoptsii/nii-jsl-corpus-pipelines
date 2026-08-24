@@ -1,28 +1,21 @@
 """What a machine-learning user needs to know before touching the corpus.
 
-The counts in :mod:`metrics` describe the corpus as a linguistic object. The
-tables here describe it as a dataset, and they answer the questions that decide
-whether a modelling experiment is possible at all:
+:mod:`metrics` describes the corpus as a linguistic object; this describes it
+as a dataset:
 
-* **How many classes are actually trainable?** A gloss with three examples is
-  not a class. :func:`class_size_table` shows how the vocabulary shrinks as the
-  minimum example count rises, and how many tokens survive with it.
-* **How long is a sign?** Segment durations set the input window, the frame
-  budget, and whether a fixed-length model is defensible at all
-  (:func:`duration_distribution`).
-* **How fast do people sign?** Signing rate varies between signers and
-  conversations, so a model trained on one pace may not transfer
-  (:func:`signing_rate`).
-* **Can the test set be signer-disjoint?** This is the single most important
-  question, and the easiest to get wrong. A random split leaks the same signer
-  into training and test, and the reported accuracy then measures memorisation
-  of a person, not recognition of a sign. :func:`split_feasibility` reports what
-  a proper held-out-signer split would cost in vocabulary and in tokens.
-* **How skewed is the distribution?** :func:`coverage_curve` gives the
-  cumulative token share by rank -- the curve that tells you a few hundred
-  glosses cover most of the data and everything after that is a long tail.
-* **Which markers travel together?** :func:`marker_cooccurrence` is what a
-  multi-task model would need before deciding which markers deserve a head.
+* :func:`class_size_table`: how the vocabulary shrinks as the minimum example
+  count and signer floor rise, and how many tokens survive with it.
+* :func:`duration_distribution`: segment durations, which set the input window
+  and the frame budget.
+* :func:`signing_rate`: pace varies between signers, so a model trained on one
+  may not transfer.
+* :func:`split_feasibility`: the important one. A random split leaks the same
+  signer into training and test, and the accuracy then measures memorisation of
+  a person rather than recognition of a sign. This reports what a proper
+  held-out-signer split costs in vocabulary and in tokens.
+* :func:`coverage_curve`: cumulative token share by rank.
+* :func:`marker_cooccurrence`: which markers travel together, before deciding
+  which deserve a head in a multi-task model.
 """
 
 from __future__ import annotations
@@ -137,7 +130,7 @@ def coverage_curve(gloss_stats: pd.DataFrame,
 
 
 def full_coverage_curve(gloss_stats: pd.DataFrame) -> pd.DataFrame:
-    """Rank against cumulative share, one row per gloss -- the plotting input."""
+    """Rank against cumulative share, one row per gloss, the plotting input."""
     if gloss_stats.empty:
         return pd.DataFrame(columns=["rank", "gloss", "occurrences",
                                      "cumulative_tokens", "cumulative_percent"])
@@ -169,8 +162,8 @@ def duration_distribution(annotations: pd.DataFrame,
                           label: str = GLOBAL_TAG) -> pd.DataFrame:
     """Annotation duration percentiles, overall and for each marker.
 
-    Percentiles rather than a mean: sign durations are strongly right-skewed --
-    a held sign or a fingerspelled name can run several times the median -- so a
+    Percentiles rather than a mean: sign durations are strongly right-skewed,
+    a held sign or a fingerspelled name can run several times the median: so a
     mean would describe no actual sign.
     """
     parsed = annotations[annotations["is_parsed"]] if "is_parsed" in annotations.columns \
@@ -239,7 +232,7 @@ def signing_rate(annotations: pd.DataFrame,
 # ===========================================================================
 
 def signer_balance(annotations: pd.DataFrame) -> pd.DataFrame:
-    """Token share per signer -- how far the corpus is from evenly sampled."""
+    """Token share per signer: how far the corpus is from evenly sampled."""
     parsed = annotations[annotations["is_parsed"]] if "is_parsed" in annotations.columns \
         else annotations
     counts = parsed.groupby(SIGNER_COLUMN).size().sort_values(ascending=False)

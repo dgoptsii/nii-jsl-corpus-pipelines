@@ -1,25 +1,18 @@
 #!/usr/bin/env python3
 """Recompute the signer metadata columns in an existing clip index.
 
-Stage 2 stamps handedness, age, age group and gender onto every row of
-``output/clips/clip_index.csv`` as it cuts the clips, and stage 4 reads that
-index. So a correction to ``input_lists/signers.csv`` - or to the lookup in
-``signers.py`` - only reaches the analysis once the index is rewritten.
+Stage 2 stamps handedness, age, age group and gender onto
+``output/clips/clip_index.csv`` as it cuts clips, so a correction to
+``input_lists/signers.csv`` only reaches the analysis once the index is
+rewritten. Stage 2 has no skip logic and would re-cut every clip, so this
+recomputes exactly those columns through the same code path.
 
-Re-running stage 2 would do it, but stage 2 has no skip logic: it re-cuts every
-clip from the source video, which is hours of work to change a text column.
-This script recomputes exactly the columns stage 2 derives from the signers
-file, using the same code path, and leaves everything else untouched.
+    python3 refresh_clip_index.py output --signers-file input_lists/signers.csv [--write]
 
-    python3 refresh_clip_index.py output --signers-file input_lists/signers.csv
-    python3 refresh_clip_index.py output --signers-file input_lists/signers.csv --write
-
-Without --write it reports what would change and exits. The previous index is
-kept as clip_index.csv.bak.
-
-``--fix-paths`` additionally rebases ``clip_path`` onto the output folder given
-here, for an index written before the project folder was renamed. Only stage 4's
---save-debug reads that column, so it is off by default.
+Without ``--write`` it reports what would change and exits; the previous index
+is kept as ``clip_index.csv.bak``. ``--fix-paths`` also rebases ``clip_path``
+onto the output folder given here, for an index written before the project
+folder was renamed.
 """
 
 from __future__ import annotations

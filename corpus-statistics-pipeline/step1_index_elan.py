@@ -1,4 +1,4 @@
-"""Step 1 -- index the ELAN files.
+"""Step 1: index the ELAN files.
 
 Walks the corpus folder for ``.eaf`` documents and records what each one can
 contribute: how long it is, which tiers it has, whether those tiers include
@@ -131,7 +131,7 @@ def main(argv=None) -> int:
                         help="folder searched recursively for .eaf files")
     parser.add_argument("--elan-list", "--elan_list", dest="elan_list",
                         type=Path, default=None, metavar="SELECTED.csv",
-                        help="the parser's selected_elan_files.csv -- index "
+                        help="the parser's selected_elan_files.csv: index "
                              "exactly the files it chose, one per recording. "
                              "Preferred over --corpus, which indexes every copy "
                              "of a duplicated recording.")

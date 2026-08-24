@@ -1,37 +1,25 @@
 #!/usr/bin/env python3
 """Audit an ELAN corpus against the annotation-information spreadsheet.
 
-The corpus holds most recordings several times over, and the copies disagree:
-different Word tier variants, different spellings of the same signer, and
-sometimes an age or a gender letter that contradicts the recording sheet. This
-script reports all of it and changes nothing.
+The corpus holds most recordings several times over and the copies disagree:
+different Word tier variants, different spellings of the same signer, and ages
+or gender letters that contradict the recording sheet. This script reports all
+of it and changes nothing.
 
     python3 audit_corpus.py CORPUS_ROOT \
         --sheet "CORPUS_ROOT/進捗状況-Annotation information.xlsx" \
         -output_folder corpus_audit
 
-What it writes
---------------
-    duplicate_recordings.csv       recordings existing in more than one place,
-                                   one row per copy, with every Word tier and
-                                   its annotation count, and every spelling of
-                                   a signer ID inside
-    word_variants_by_file.csv      which files carry a Word-jp variant, which
-                                   variant, and how many annotations on it
-    signer_label_inflation.csv     every signer written more than one way on a
-                                   Word tier: one row per tier, with a stable
-                                   label number, the tier and the file it came
-                                   from
-    signer_id_inconsistencies.csv  every way a signer ID goes wrong: several
-                                   spellings in one file, a signer from another
-                                   recording, a tier name disagreeing with its
-                                   PARTICIPANT attribute, and an age or gender
-                                   contradicting the spreadsheet
+Writes ``duplicate_recordings.csv`` (one row per copy, with every Word tier,
+its annotation count and every spelling of a signer ID inside),
+``word_variants_by_file.csv``, ``signer_label_inflation.csv`` (every signer
+written more than one way, one row per tier) and
+``signer_id_inconsistencies.csv`` (several spellings in one file, a signer from
+another recording, a tier name disagreeing with its PARTICIPANT attribute, an
+age or gender contradicting the spreadsheet).
 
-
-The spreadsheet's first sheet is the authority for who each signer is. It is
-laid out as one block per prefecture, two rows per pair, with the age given
-once when both signers share it.
+The spreadsheet's first sheet is the authority for who each signer is: one
+block per prefecture, two rows per pair, the age given once when both share it.
 """
 
 from __future__ import annotations
@@ -177,7 +165,7 @@ class FileReport:
         self.word_tiers: Dict[str, Tuple[str, str, int]] = {}
         #: every participant string seen on any tier, Word or not
         self.participants: Dict[str, List[str]] = defaultdict(list)
-        #: the subset written on Word tiers -- these are the ones that end up
+        #: the subset written on Word tiers, these are the ones that end up
         #: counted as signers by the pipelines
         self.word_participants: Dict[str, List[str]] = defaultdict(list)
         #: Word tier ID -> its PARTICIPANT attribute, to compare with the name
@@ -190,7 +178,7 @@ class FileReport:
 
     @property
     def plain_annotations(self) -> int:
-        """The ``-Word-jp`` tiers only -- the sanctioned gloss."""
+        """The ``-Word-jp`` tiers only: the sanctioned gloss."""
         return sum(count for _, variant, count in self.word_tiers.values()
                    if not variant)
 
@@ -205,7 +193,7 @@ class FileReport:
 
     @property
     def signers(self) -> List[str]:
-        """Signers named on the Word tiers -- the ones the pipelines read.
+        """Signers named on the Word tiers: the ones the pipelines read.
 
         Deliberately not every tier: a file also carries gesture, mouth and
         comment tiers with naming habits of their own, and a signer problem
@@ -254,7 +242,7 @@ def read_eaf(path: Path, root: Path) -> FileReport:
             continue
 
         # On a Word tier the layout ``<participant>-Word-jp`` is reliable, and
-        # it is what the parser reads -- so it, not the PARTICIPANT attribute,
+        # it is what the parser reads: so it, not the PARTICIPANT attribute,
         # decides who the pipelines think signed this. The two disagree more
         # often than one would like, which is its own report.
         from_name = participant_from_tier_id(tier_id) or attribute
@@ -399,7 +387,7 @@ def main(argv=None) -> int:
     # ---- where a signer's extra labels come from ------------------------
     # The pipelines count distinct participant strings on Word tiers, so a
     # signer written two ways is two signers. One row per place a label is
-    # actually written -- signer, label, the tier, the file -- so a name can be
+    # actually written (signer, label, the tier, the file) so a name can be
     # traced to the tiers that have to be edited to repair it.
     written_as: Dict[str, set] = defaultdict(set)
     for report in reports:
@@ -459,7 +447,7 @@ def main(argv=None) -> int:
     # ---- signers who do not belong to this recording --------------------
     # ``NS_07-08_Cur`` should contain NS_07 and NS_08 and nobody else. A tier
     # for someone else is a template copied from another recording and never
-    # renamed -- which also means its annotations are attributed to the wrong
+    # renamed: which also means its annotations are attributed to the wrong
     # person.
     for report in reports:
         match = re.match(r"^\d?([A-Za-z]{2})_(\d+)-(\d+)", report.recording)

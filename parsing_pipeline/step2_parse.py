@@ -1,24 +1,15 @@
 #!/usr/bin/env python3
 """STEP 2 (optional, standalone): parse extracted annotation CSVs.
 
-You only need this if you are running the steps separately. The normal path is
-run_pipeline.py, which does all three steps in one go.
+Only needed when running the steps separately; run_pipeline.py does all three
+in one go.
 
-    python step2_parse.py EXTRACTED_FOLDER -output_folder PARSED_FOLDER [options]
+    python step2_parse.py EXTRACTED_FOLDER -output_folder PARSED_FOLDER \
+        --exceptions-file input_lists/exceptions.txt
 
-Example
--------
-    python step2_parse.py ./extracted -output_folder ./parsed
-    python step2_parse.py ./extracted -output_folder ./parsed --exceptions-file input_lists/exceptions.txt
-
-Input
------
-    EXTRACTED_FOLDER/*_word_annotations.csv   (from step1_extract.py)
-
-Output
-------
-    PARSED_FOLDER/parsed/<name>_parsed.csv            every row
-    PARSED_FOLDER/ambiguous/<name>_ambiguous_rows.csv only rows needing review
+Reads ``EXTRACTED_FOLDER/*_word_annotations.csv`` from step 1. Writes
+``PARSED_FOLDER/parsed/<name>_parsed.csv`` (every row) and
+``PARSED_FOLDER/ambiguous/<name>_ambiguous_rows.csv`` (rows needing review).
 """
 
 from __future__ import annotations

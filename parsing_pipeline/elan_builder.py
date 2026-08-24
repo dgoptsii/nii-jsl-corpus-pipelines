@@ -1,14 +1,12 @@
 """Write new ELAN files that carry the parsed annotations as extra tiers.
 
------------------------
-**No original tier is  removed.** The output ``.eaf`` is the input document
-plus one new child tier per parsed column and per speaker:
-
-``<SPEAKER>-PARSED-<COLUMN>``  (e.g. ``FO_07_FK_40F-PARSED-cl``)
+**No original tier is removed.** The output ``.eaf`` is the input document plus
+one new child tier per parsed column and per speaker,
+``<SPEAKER>-PARSED-<COLUMN>`` (e.g. ``FO_07_FK_40F-PARSED-cl``).
 
 Each new tier is a ``Symbolic_Association`` child of that speaker's Word-jp
-tier, so every parsed value sits underneath the annotation it came from and
-inherits its timing. New elements are inserted in EAF schema order, and the
+tier, so every parsed value sits under the annotation it came from and inherits
+its timing. New elements are inserted in EAF schema order, and the
 ``Symbolic_Association`` constraint and linguistic type are declared if the
 source file did not already declare them.
 """
@@ -472,8 +470,8 @@ def add_parsed_child_tiers(
     parsed_columns = list(columns) if columns else get_parsed_columns(rows)
 
     # One group per source Word tier, not per speaker. A file can hold two Word
-    # tiers for the same signer -- a second annotation pass under a slightly
-    # different tier name -- and each set of parsed rows belongs on the tier it
+    # tiers for the same signer: a second annotation pass under a slightly
+    # different tier name: and each set of parsed rows belongs on the tier it
     # was read from. Rows from an older CSV carry no tier, and fall back to
     # finding the tier by the speaker's name, which is what used to happen.
     groups: Dict[str, List[Dict[str, str]]] = {}
