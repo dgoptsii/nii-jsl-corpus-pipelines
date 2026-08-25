@@ -44,13 +44,6 @@ python3 run_pipeline.py ../parsing_pipeline/output/debug/parsed_annotations \
 ```
 
 
-## What is not in this repository
-
-Corpus media and annotations, and everything derived from them: video clips,
-extracted landmarks, per-frame region counts, generated tables and figures. All
-of it regenerates from the corpus and the code, and together it runs to several
-gigabytes. The compiled reports are committed as PDFs.
-
 ## Requirements
 
 Python 3.9+. Each pipeline lists its own dependencies in `requirements.txt`;
