@@ -19,7 +19,7 @@ would keep taking at most ``cap`` per gloss.
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Iterable, List, Optional, Sequence, Tuple
+from typing import Iterable, Optional, Sequence, Tuple
 
 import pandas as pd
 

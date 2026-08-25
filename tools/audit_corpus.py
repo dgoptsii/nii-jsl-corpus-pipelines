@@ -38,7 +38,6 @@ from typing import Dict, List, Optional, Tuple
 # --------------------------------------------------------------------------
 
 #: A Word tier is any tier whose ID contains this, case-insensitive.
-WORD_TIER_MARKER = "word-jp"
 
 #: ...except a romanised one, which is a transcription, not an annotation.
 ROMAN_MARKER = "roman"
@@ -171,10 +170,6 @@ class FileReport:
         #: Word tier ID -> its PARTICIPANT attribute, to compare with the name
         self.tier_attribute: Dict[str, str] = {}
 
-    @property
-    def annotations(self) -> int:
-        """Every Word tier, plain and variant. Rarely the number you want."""
-        return sum(item[2] for item in self.word_tiers.values())
 
     @property
     def plain_annotations(self) -> int:
@@ -259,7 +254,7 @@ def read_eaf(path: Path, root: Path) -> FileReport:
                     if local_name(child.tag) == "ANNOTATION_VALUE")
         )
         report.word_tiers[tier_id] = (
-            participant_from_tier_id(tier_id) or participant, variant, filled
+            participant_from_tier_id(tier_id) or attribute, variant, filled
         )
 
     return report

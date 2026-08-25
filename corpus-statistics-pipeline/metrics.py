@@ -15,9 +15,8 @@ vocabulary size, and only the second is what a machine-learning user means by
 
 from __future__ import annotations
 
-from typing import Dict, List, Optional, Sequence
+from typing import Dict, Optional
 
-import numpy as np
 import pandas as pd
 
 from config import (

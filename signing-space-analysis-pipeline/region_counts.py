@@ -10,8 +10,7 @@ so the original left/right identity remains recoverable.
 
 from __future__ import annotations
 
-from pathlib import Path
-from typing import Dict, List, Optional, Sequence
+from typing import Dict, List
 
 import numpy as np
 import pandas as pd

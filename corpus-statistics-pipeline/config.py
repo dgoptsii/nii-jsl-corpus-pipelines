@@ -15,8 +15,6 @@ from typing import Dict, List, Tuple
 # These names come from the annotation parser. If the parser's schema changes,
 # this is the only place that has to follow.
 
-METADATA_COLUMNS: List[str] = ["speaker_id", "time_start", "time_end"]
-
 LEXICAL_COLUMN = "lexical_item"
 ANNOTATION_COLUMN = "annotation"
 SIGNER_COLUMN = "speaker_id"
@@ -38,7 +36,6 @@ AMBIGUOUS_COLUMN = "ambiguous"
 BLOCKING_KEYS: List[str] = ["d", "fal", "un"]
 
 #: Linguistic markers, i.e. everything except the blocking ones.
-LINGUISTIC_KEYS: List[str] = [k for k in KEY_COLUMNS if k not in BLOCKING_KEYS]
 
 
 # ===========================================================================

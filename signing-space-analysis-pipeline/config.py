@@ -236,25 +236,6 @@ REGION_LABELS: Dict[str, str] = {
     "missing": "missing",
 }
 
-#: Left/right mirror pairs, used when a left-handed signer's space is flipped.
-MIRROR_REGION: Dict[str, str] = {
-    "p_upper_left": "p_upper_right", "p_upper_right": "p_upper_left",
-    "p_left_upper_torso": "p_right_upper_torso",
-    "p_right_upper_torso": "p_left_upper_torso",
-    "p_left_lower_torso": "p_right_lower_torso",
-    "p_right_lower_torso": "p_left_lower_torso",
-    "p_lower_left": "p_lower_right", "p_lower_right": "p_lower_left",
-    "ep_upper_left": "ep_upper_right", "ep_upper_right": "ep_upper_left",
-    "ep_left_upper": "ep_right_upper", "ep_right_upper": "ep_left_upper",
-    "ep_left_upper_torso": "ep_right_upper_torso",
-    "ep_right_upper_torso": "ep_left_upper_torso",
-    "ep_left_lower_torso": "ep_right_lower_torso",
-    "ep_right_lower_torso": "ep_left_lower_torso",
-    "ep_left_lower": "ep_right_lower", "ep_right_lower": "ep_left_lower",
-    "ep_lower_left": "ep_lower_right", "ep_lower_right": "ep_lower_left",
-}
-
-
 # ===========================================================================
 # HANDS
 # ===========================================================================
