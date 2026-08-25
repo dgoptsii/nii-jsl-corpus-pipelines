@@ -1,0 +1,17 @@
+signers.csv rebuilt from 進捗状況-Annotation information.xlsx
+122 signers
+
+Handedness cells that needed a judgement:
+  FO_15    sheet says 'L'        -> left   (mirrored)
+  GM_17    sheet says 'L'        -> left   (mirrored)
+  IK_09    sheet says 'R(L)'     -> right  (mixed (R(L)) - leads right, NOT mirrored)
+  IK_10    sheet says 'R L'      -> right  (mixed (R L) - leads right, NOT mirrored)
+  IS_05    sheet says 'R(L)'     -> right  (mixed (R(L)) - leads right, NOT mirrored)
+  IS_08    sheet says 'R (L)'    -> right  (mixed (R (L)) - leads right, NOT mirrored)
+  IS_13    sheet says 'L'        -> left   (mirrored)
+  IS_14    sheet says 'L'        -> left   (mirrored)
+  NR_14    sheet says '?'        -> right  (unknown in sheet - assumed right)
+  NR_20    sheet says '?'        -> right  (unknown in sheet - assumed right)
+
+Signers with no age or no gender in the sheet:
+  none
