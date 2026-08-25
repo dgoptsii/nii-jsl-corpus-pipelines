@@ -6,10 +6,10 @@ means right-handed and blank age reports the signer as "unknown". Column names
 and IDs are matched loosely: case, punctuation and zero-padding are ignored,
 and the prefix ``FO_07`` matches ``FO_07_FK_40F``.
 
-Age and gender are taken from the ID suffix when it has one (``FO_08_FK_50F``
-is a 50-band female signer), since that is the corpus's own record written at
-recording time; the file supplies them only for IDs without a suffix.
-Handedness is never in the ID, so the file is its only source.
+Age, gender and handedness all come from that file, which
+``tools/signers_from_xlsx.py`` generates from the recording spreadsheet. The
+tier label is never consulted for them: report~1 shows the label contradicts
+the spreadsheet for 23 signers, so the spreadsheet is the single source.
 """
 
 from __future__ import annotations
@@ -46,25 +46,6 @@ def normalise_gender(value: str) -> str:
     if not text or text.lower() in {"nan", "none", "?"}:
         return DEFAULT_GENDER
     return GENDER_LABELS.get(text.lower(), text)
-
-
-#: Age band and gender encoded in the participant ID itself: the trailing
-#: ``50F`` of ``FO_08_FK_50F``. This is the corpus's own record, written at
-#: recording time, so it is preferred over anything a side file says.
-ID_AGE_GENDER = re.compile(r"(?:^|[_\-\s])(\d{2,3})\s*([MFmf])\s*$")
-
-
-def age_and_gender_from_id(signer_id: str) -> tuple:
-    """Pull ``(age, gender)`` out of a participant ID.
-
-    ``FO_08_FK_50F`` -> ``(50.0, "F")``. Returns ``(None, "unknown")`` when the
-    ID does not end in the age+gender form, so a corpus that names participants
-    differently falls through to the signers file untouched.
-    """
-    match = ID_AGE_GENDER.search(str(signer_id or "").strip())
-    if not match:
-        return (None, DEFAULT_GENDER)
-    return (float(match.group(1)), match.group(2).upper())
 
 
 def _pick_column(frame, candidates):
@@ -210,10 +191,7 @@ class SignerMetadata:
         return self.handedness(signer_id) == "left"
 
     def age(self, signer_id: str) -> Optional[float]:
-        """The ID's own age band, else the signers file, else None."""
-        from_id, _ = age_and_gender_from_id(signer_id)
-        if from_id is not None:
-            return from_id
+        """The signer's age from the spreadsheet, else None."""
         matched = self._match(signer_id, list(self.ages_by_key))
         return self.ages_by_key.get(matched) if matched else None
 
@@ -226,39 +204,10 @@ class SignerMetadata:
         return age_band_for(self.age(signer_id))
 
     def gender(self, signer_id: str) -> str:
-        """The ID's own gender letter, else the signers file, else unknown."""
-        _, from_id = age_and_gender_from_id(signer_id)
-        if from_id != DEFAULT_GENDER:
-            return from_id
+        """The signer's gender from the spreadsheet, else unknown."""
         matched = self._match(signer_id, list(self.genders_by_key))
         return self.genders_by_key.get(matched, DEFAULT_GENDER) if matched else DEFAULT_GENDER
 
-    def disagrees_with_id(self, signer_id: str) -> Optional[str]:
-        """Describe a conflict between the ID and the signers file, if any.
-
-        Worth surfacing: a mismatch means one of the two records is wrong about
-        a real person, and the ID silently wins.
-        """
-        id_age, id_gender = age_and_gender_from_id(signer_id)
-        problems = []
-
-        if id_age is not None:
-            matched = self._match(signer_id, list(self.ages_by_key))
-            file_age = self.ages_by_key.get(matched) if matched else None
-            if file_age is not None and float(file_age) != id_age:
-                problems.append(f"age {id_age:.0f} in the ID, {file_age:.0f} in the file")
-
-        if id_gender != DEFAULT_GENDER:
-            matched = self._match(signer_id, list(self.genders_by_key))
-            file_gender = self.genders_by_key.get(matched) if matched else None
-            if file_gender and file_gender != id_gender:
-                problems.append(f"gender {id_gender} in the ID, {file_gender} in the file")
-
-        return "; ".join(problems) if problems else None
-
-    # -- reporting --------------------------------------------------------
-
-    @property
     def n_left_handed(self) -> int:
         return len(self.left_handed_keys)
 
