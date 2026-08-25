@@ -19,15 +19,13 @@ from pathlib import Path
 import pandas as pd
 
 from config import (
-    ANNOTATIONS_FILE,
     DEFAULT_OUTPUT_FOLDER,
     DIAGNOSTICS_SUBFOLDER,
-    ELAN_INDEX_FILE,
     MIN_OVERLAP_MS,
     TABLES_SUBFOLDER,
 )
-from io_utils import read_csv_safely, write_csv
-from latex import MOUTH_COLUMNS, MOUTH_HEADERS, write_report_tables
+from io_utils import write_csv
+from latex import write_report_tables
 from mouth import (
     annotate_with_mouth,
     category_counts_by_region,

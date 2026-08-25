@@ -3,9 +3,8 @@
 from __future__ import annotations
 
 import argparse
-import csv
 from pathlib import Path
-from typing import Dict, Iterable, List, Optional, Sequence
+from typing import List, Optional
 
 import pandas as pd
 
@@ -59,20 +58,6 @@ def write_csv(path: Path, frame: pd.DataFrame) -> Path:
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
     frame.to_csv(path, index=False, encoding=CSV_WRITE_ENCODING)
-    return path
-
-
-def write_rows(path: Path, rows: Iterable[Dict[str, object]], fieldnames: Sequence[str]) -> Path:
-    """Write dict rows with a fixed header, keeping only ``fieldnames``."""
-    path = Path(path)
-    path.parent.mkdir(parents=True, exist_ok=True)
-
-    with path.open("w", newline="", encoding=CSV_WRITE_ENCODING) as handle:
-        writer = csv.DictWriter(handle, fieldnames=list(fieldnames))
-        writer.writeheader()
-        for row in rows:
-            writer.writerow({key: row.get(key, "") for key in fieldnames})
-
     return path
 
 

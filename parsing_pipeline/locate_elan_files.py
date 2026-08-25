@@ -18,10 +18,9 @@ recording.
 from __future__ import annotations
 
 import re
-import xml.etree.ElementTree as ET
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Dict, Iterable, List, Optional, Sequence, Set, Tuple
+from typing import Dict, Iterable, List, Optional, Sequence, Set
 
 from io_utils import read_text_list
 

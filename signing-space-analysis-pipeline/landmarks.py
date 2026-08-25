@@ -37,6 +37,7 @@ from config import (
     LANDMARK_FORMAT_VERSION,
     MASK_NON_TARGET_PERSON,
     MASK_ONLY_IF_MULTIPLE_PERSONS,
+    FILL_EDGE_MISSING_FACES,
     MAX_FACE_INTERPOLATION_GAP,
     MAX_HAND_INTERPOLATION_GAP,
     MIN_DETECTION_CONFIDENCE,
@@ -280,18 +281,6 @@ def pad_and_enhance(frame: np.ndarray) -> Tuple[np.ndarray, int, int]:
     return working, pad_x, pad_y
 
 
-def preprocess_frame(
-    frame: np.ndarray,
-    persons: List[PersonInstance],
-    side: str,
-    background: Optional[np.ndarray],
-) -> Tuple[np.ndarray, int, int, Dict[str, object]]:
-    """Mask, pad and enhance in one call. Returns the padding used."""
-    cleaned, info = mask_non_target(frame, persons, side, background)
-    prepared, pad_x, pad_y = pad_and_enhance(cleaned)
-    return prepared, pad_x, pad_y, info
-
-
 def _select(landmark_list, ids: List[int], with_z: bool, with_visibility: bool) -> Optional[np.ndarray]:
     """Pull only the wanted MediaPipe landmarks into a compact array."""
     if landmark_list is None:
@@ -488,7 +477,8 @@ def interpolate_gaps(clip: ClipLandmarks) -> None:
     """Fill short hand gaps and missing face anchors."""
     face_observed = np.array([np.all(np.isfinite(f)) for f in clip.face_xy])
     clip.face_source = _interpolate_series(
-        clip.face_xy, face_observed, MAX_FACE_INTERPOLATION_GAP, True
+        clip.face_xy, face_observed, MAX_FACE_INTERPOLATION_GAP,
+        FILL_EDGE_MISSING_FACES
     )
 
     for attribute, label in (("left_hand_xy", "left_hand_source"),

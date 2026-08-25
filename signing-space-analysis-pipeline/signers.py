@@ -78,15 +78,6 @@ def normalise_signer_key(value: str) -> str:
     return re.sub(r"(?<![0-9])0+([0-9])", r"\1", key)
 
 
-def compact_signer_key(value: str) -> str:
-    """``normalise_signer_key`` with the segment boundaries removed as well.
-
-    Kept so a signers file written ``IS13`` still matches a corpus ID written
-    ``IS_13_40M``.
-    """
-    return normalise_signer_key(value).replace("_", "")
-
-
 def signer_id_from_row(row) -> str:
     """Pull the participant ID out of a parsed annotation row."""
     for column in SIGNER_ID_COLUMNS:
@@ -187,8 +178,6 @@ class SignerMetadata:
             return "left"
         return DEFAULT_HANDEDNESS
 
-    def is_left_handed(self, signer_id: str) -> bool:
-        return self.handedness(signer_id) == "left"
 
     def age(self, signer_id: str) -> Optional[float]:
         """The signer's age from the spreadsheet, else None."""

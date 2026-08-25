@@ -20,7 +20,7 @@ as a dataset:
 
 from __future__ import annotations
 
-from typing import Dict, List, Optional, Sequence
+from typing import List, Optional, Sequence
 
 import numpy as np
 import pandas as pd

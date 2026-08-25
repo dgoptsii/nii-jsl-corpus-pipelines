@@ -21,7 +21,7 @@ annotation spans a boundary between two mouth actions.
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Dict, Iterable, List, Optional, Sequence
+from typing import Dict, List
 
 import pandas as pd
 

@@ -10,7 +10,7 @@ interval whiskers.
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Dict, List, Optional, Sequence, Tuple
+from typing import Dict, List, Optional, Tuple
 
 import textwrap
 
@@ -23,7 +23,7 @@ from matplotlib.patches import Rectangle  # noqa: E402
 import numpy as np  # noqa: E402
 import pandas as pd  # noqa: E402
 
-from config import MIN_SIGNERS_FOR_STABLE_CI, REGION_KEYS, REGION_LABELS
+from config import MIN_SIGNERS_FOR_STABLE_CI, REGION_LABELS
 
 # A schematic body map, drawn in figure-normalised units. This mirrors the
 # anatomical bands used by the classifier without depending on any one clip's

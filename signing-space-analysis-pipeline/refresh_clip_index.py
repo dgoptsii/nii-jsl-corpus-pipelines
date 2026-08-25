@@ -26,7 +26,6 @@ from config import CLIPS_SUBFOLDER, CLIP_INDEX_FILE
 from io_utils import read_csv_safely, write_csv
 from signers import load_signer_metadata
 
-DERIVED_COLUMNS = ["handedness", "age", "age_group", "gender"]
 
 
 def main(argv=None) -> int:

@@ -16,7 +16,7 @@ from __future__ import annotations
 
 import textwrap
 from pathlib import Path
-from typing import Dict, List, Optional, Sequence
+from typing import List, Optional, Sequence
 
 import matplotlib
 matplotlib.use("Agg")
@@ -27,7 +27,7 @@ from matplotlib import font_manager
 from matplotlib.colors import to_hex, to_rgb
 from matplotlib.patches import Patch
 
-from config import MOUTH_CATEGORIES
+from config import COVERAGE_CURVE_MARKERS, MOUTH_CATEGORIES
 from io_utils import region_label
 from mouth import LEXICAL_UNIT
 
@@ -41,8 +41,6 @@ from mouth import LEXICAL_UNIT
 BLUE = "#2a78d6"
 ORANGE = "#eb6834"
 AQUA = "#1baf7a"
-YELLOW = "#eda100"
-SERIES = [BLUE, ORANGE, AQUA, YELLOW]
 
 TEXT = "#0b0b0b"
 MUTED = "#52514e"
@@ -121,10 +119,6 @@ def _save(figure, path: Path) -> Path:
 def _tidy(axes) -> None:
     axes.spines["top"].set_visible(False)
     axes.spines["right"].set_visible(False)
-
-
-def _number(value: float) -> str:
-    return f"{value:,.0f}" if abs(value) >= 1000 else f"{value:g}"
 
 
 def _headroom(axes, values, factor: float = 1.22, axis: str = "x") -> None:
@@ -225,7 +219,7 @@ def plot_annotation_breakdown(summary: pd.DataFrame, path: Path) -> Optional[Pat
 # ===========================================================================
 
 def plot_coverage_curve(curve: pd.DataFrame, path: Path,
-                        cutoffs: Sequence[int] = (100, 200, 500, 900)) -> Optional[Path]:
+                        cutoffs: Sequence[int] = tuple(COVERAGE_CURVE_MARKERS)) -> Optional[Path]:
     """Cumulative token share against vocabulary rank.
 
     The marked cutoffs are the vocabularies in the coverage table, so the figure

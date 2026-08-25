@@ -15,7 +15,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Dict, List, Optional, Set, Tuple
 
-from config import MOUTH_CATEGORIES, MOUTH_TIER_HINTS, WORD_TIER_HINTS
+from config import MOUTH_TIER_HINTS, WORD_TIER_HINTS
 
 
 def _local(tag: str) -> str:

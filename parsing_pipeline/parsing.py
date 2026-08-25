@@ -78,11 +78,6 @@ def load_exceptions(path: Optional[Path]) -> Set[str]:
     return set_exceptions(read_text_list(Path(path)))
 
 
-def get_exceptions() -> Set[str]:
-    """Return the currently active normalised exception keys."""
-    return set(_NOT_AMBIGUOUS_EXCEPTIONS)
-
-
 def normalize_exception_key(text: str) -> str:
     return normalize_annotation(text).lstrip("/").strip().lower()
 
@@ -496,15 +491,6 @@ def detect_hand_from_japanese_explanation(original_text: str) -> Optional[str]:
     return None
 
 
-def remove_japanese_hand_explanation(text: str) -> str:
-    """Remove explanatory parentheses like 楽しい(右手だけ) while keeping semantic ones."""
-    return re.sub(
-        r"[\(（][^\)）]*(右手|左手|右|左)[^\)）]*[\)）]",
-        "",
-        str(text or ""),
-    )
-
-
 def parse_parenthetical_hand(text: str) -> Tuple[str, Optional[str]]:
     match = re.search(r"[\(（]\s*(RH|R|LH|L|右手|左手)\s*[\)）]", text, flags=re.I)
     if not match:
@@ -634,18 +620,6 @@ def is_rep_marker_text(text: str) -> bool:
     return bool(re.fullmatch(r"(?i)(?:REP\s*[:：]?\s*[0-9]*|[0-9]+\s*REP)", text))
 
 
-def get_rep_marker_number(text: str) -> str:
-    """Extract the number from rep, rep2, rep:2, 2rep. Empty means 1."""
-    text = normalize_digits(str(text or "").strip())
-    match = re.fullmatch(r"(?i)REP\s*[:：]?\s*([0-9]*)", text)
-    if match:
-        return match.group(1) or "1"
-    match = re.fullmatch(r"(?i)([0-9]+)\s*REP", text)
-    if match:
-        return match.group(1)
-    return "1"
-
-
 def infer_repeated_word(text: str) -> str:
     """Infer which sign is repeated, before the rep markers are stripped.
 
@@ -766,14 +740,6 @@ def parse_qm(text: str, attrs: Dict[str, str]) -> str:
     text = re.sub(r"(?i)(^|[^A-Za-z])QM\s*[:：]?", " ", text)
 
     return text.strip()
-
-
-def get_pt_hand_code(active_hand: Optional[str]) -> str:
-    if active_hand == "rh":
-        return "R"
-    if active_hand == "lh":
-        return "L"
-    return "N"
 
 
 def parse_dw(text: str, attrs: Dict[str, str]) -> str:
@@ -930,32 +896,6 @@ def parse_dw(text: str, attrs: Dict[str, str]) -> str:
 
     text = re.sub(r"(?i)(^|[^A-Za-z])DW\s*[:：]\s*([^＋+/;,()\s]*)", repl_standalone, text)
     return text.strip()
-
-
-def parse_hand_note_inside_value(value: str, attrs: Dict[str, str]) -> Tuple[str, Optional[str]]:
-    """Parse compact hand notes embedded inside another value.
-
-    Example:
-      二つ目:lh人差し指  -> value 二つ目, lh=人差し指
-      二つ目:LH:人差し指 -> value 二つ目, lh=人差し指
-    """
-    text = str(value or "").strip()
-
-    pattern = r"(?i)^(.+?)\s*[:：]\s*(LH|RH|L|R|左手|右手|左|右)\s*[:：]?\s*(.+)$"
-    match = re.match(pattern, text)
-    if not match:
-        return cleanup_lexical_item(text), None
-
-    clean_value = cleanup_lexical_item(match.group(1))
-    raw_marker = match.group(2)
-    hand = MARKER_TO_HAND.get(raw_marker.upper(), MARKER_TO_HAND.get(raw_marker))
-    hand_value = cleanup_lexical_item(match.group(3))
-
-    if hand and hand_value:
-        add_unique(attrs, hand, hand_value)
-        attrs["_last_hand_from_pt_object"] = hand
-
-    return clean_value, hand
 
 
 def parse_pt_value(value: str, attrs: Dict[str, str], active_hand: Optional[str] = None) -> None:
@@ -1282,24 +1222,6 @@ def parse_d_fal_un(text: str, attrs: Dict[str, str], key: str) -> Tuple[str, boo
         text = re.sub(rf"(?i)(^|[^A-Za-z]){key}\s*[:：]?", " ", text)
 
     return text.strip(), found
-
-
-def remove_mouth_parentheses_from_value(text: str) -> str:
-    """Remove mouth-only notes from marker values while keeping semantic parentheses."""
-    return cleanup_lexical_item(
-        re.sub(
-            r"[\(（]\s*M\s*(?:[:：=＝]|は)[^\)）]*[\)）]",
-            "",
-            normalize_keywords(str(text or "")),
-            flags=re.I,
-        )
-    )
-
-
-def strip_empty_marker_parentheses(text: str) -> str:
-    """Remove empty marker parentheses such as (ges:) after the column was set to TRUE."""
-    text = re.sub(r"(?i)[\(（]\s*GES\s*[:：]?\s*[\)）]", " ", str(text or ""))
-    return text.strip()
 
 
 def split_classifier_value_and_annotations(value: str, attrs: Dict[str, str]) -> str:
