@@ -4,6 +4,14 @@ Three pipelines that turn the free-form gloss annotations of the Japanese Sign
 Language Dialogue Corpus into structured, analysable data, and then measure how
 much of the signing space signers actually use.
 
+<p align="center">
+  <img src="docs/images/signing_space_landmarks_regions.png" width="900"
+       alt="Signing-space stage: pose and hand landmarks on a corpus clip, and the same hands classified into body-relative regions">
+  <br><em>Signing-space stage: pose and hand landmarks on a corpus clip (left) and the
+  same frame normalised on the signer's body, with every hand point assigned to a
+  body-relative region (right).</em>
+</p>
+
 ```
 ELAN .eaf  ─▶  1. parsing  ─▶  parsed annotations  ─┬─▶  2a. corpus statistics
    + video                     + rebuilt .eaf       │
@@ -20,6 +28,14 @@ ELAN .eaf  ─▶  1. parsing  ─▶  parsed annotations  ─┬─▶  2a. cor
 | [`reports/`](reports/) | The technical report. |
 
 Each folder has its own README with the full command reference. Start there.
+
+<p align="center">
+  <img src="docs/images/body_map_CL_FO.png" width="700"
+       alt="Share of hand points per signing-space region">
+  <br><em>Where the hands go: share of hand points per signing-space region for
+  classifier (CL) signs in the FO recordings (793 clips from 16 signers), dominant
+  and non-dominant hand, 95% CIs bootstrapped over signers.</em>
+</p>
 
 ## Quick start
 

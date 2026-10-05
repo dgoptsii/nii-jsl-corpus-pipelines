@@ -95,3 +95,6 @@ _work/
 
 # One-off helper, deliberately not part of the pipeline.
 signing-space-analysis-pipeline/remap_clip_ids.py
+
+# README illustrations: a small, hand-picked set of figures and frames.
+!docs/images/*.png
